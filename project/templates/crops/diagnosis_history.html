@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Diagnosis History - FloraSight{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-history me-2 text-success"></i>Diagnosis History
+                </h1>
+                <a href="{% url 'crops:upload_image' %}" class="btn btn-success">
+                    <i class="fas fa-camera me-2"></i>New Diagnosis
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-6">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" class="form-control" id="search" name="search" 
+                                   value="{{ search_query }}" placeholder="Search by disease or crop type...">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-control" id="status" name="status">
+                                <option value="">All Status</option>
+                                <option value="processing" {% if status_filter == 'processing' %}selected{% endif %}>Processing</option>
+                                <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+                                <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Failed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search me-2"></i>Filter
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diagnosis List -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% if page_obj %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Crop Type</th>
+                                    <th>Disease</th>
+                                    <th>Confidence</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for diagnosis in page_obj %}
+                                <tr class="searchable-item">
+                                    <td>
+                                        <img src="{{ diagnosis.crop_image.url }}" 
+                                             alt="Crop" class="diagnosis-thumb">
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.crop_type %}
+                                            {{ diagnosis.crop_type.name }}
+                                        {% else %}
+                                            <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.predicted_disease %}
+                                            <span class="badge bg-danger">{{ diagnosis.predicted_disease.name }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.confidence_score %}
+                                            {{ diagnosis.confidence_score|floatformat:1 }}%
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if diagnosis.status == 'completed' %}success{% elif diagnosis.status == 'processing' %}warning{% else %}danger{% endif %}">
+                                            {{ diagnosis.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ diagnosis.created_at|date:"M d, Y H:i" }}</td>
+                                    <td>
+                                        <a href="{% url 'crops:diagnosis_detail' diagnosis.id %}" 
+                                           class="btn btn-sm btn-outline-primary" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if page_obj.has_other_pages %}
+                    <nav aria-label="Diagnosis pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">First</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Previous</a>
+                            </li>
+                            {% endif %}
+
+                            <li class="page-item active">
+                                <span class="page-link">
+                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                                </span>
+                            </li>
+
+                            {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Last</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No diagnoses found</h5>
+                        <p class="text-muted">
+                            {% if search_query or status_filter %}
+                                Try adjusting your search criteria.
+                            {% else %}
+                                Upload your first crop image to get started!
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'crops:upload_image' %}" class="btn btn-success">
+                            <i class="fas fa-camera me-2"></i>Upload Image
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Upload Image - FloraSight{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-camera me-2"></i>Upload Crop Image for Diagnosis
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" id="uploadForm">
+                        {% csrf_token %}
+                        
+                        <!-- Image Upload Section -->
+                        <div class="mb-4">
+                            <label for="{{ form.crop_image.id_for_label }}" class="form-label fw-bold">
+                                Crop Image <span class="text-danger">*</span>
+                            </label>
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                    <h5>Drag & Drop your image here</h5>
+                                    <p class="text-muted">or click to browse</p>
+                                    {{ form.crop_image }}
+                                </div>
+                                <div class="image-preview" id="imagePreview" style="display: none;">
+                                    <img id="previewImg" src="" alt="Preview" class="img-fluid rounded">
+                                    <button type="button" class="btn btn-sm btn-danger remove-image" id="removeImage">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">
+                                Supported formats: JPG, PNG, GIF. Max size: 10MB
+                            </small>
+                        </div>
+
+                        <div class="row">
+                            <!-- Crop Type -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.crop_type.id_for_label }}" class="form-label fw-bold">
+                                    Crop Type
+                                </label>
+                                {{ form.crop_type }}
+                                <small class="form-text text-muted">
+                                    Select the type of crop in the image
+                                </small>
+                            </div>
+
+                            <!-- Environmental Data -->
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.temperature.id_for_label }}" class="form-label fw-bold">
+                                    Temperature (°C)
+                                </label>
+                                {{ form.temperature }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.humidity.id_for_label }}" class="form-label fw-bold">
+                                    Humidity (%)
+                                </label>
+                                {{ form.humidity }}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.soil_ph.id_for_label }}" class="form-label fw-bold">
+                                    Soil pH
+                                </label>
+                                {{ form.soil_ph }}
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="mb-4">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">
+                                Additional Notes
+                            </label>
+                            {{ form.notes }}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
+                                <i class="fas fa-microscope me-2"></i>Analyze Image
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-lightbulb me-2 text-warning"></i>Tips for Better Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Use good lighting conditions
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Focus on affected plant parts
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Avoid blurry images
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Include environmental data for better accuracy
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Take multiple angles if possible
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    Ensure the plant fills most of the frame
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('id_crop_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const removeImage = document.getElementById('removeImage');
+    const uploadContent = uploadArea.querySelector('.upload-content');
+
+    // Handle drag and drop
+    uploadArea.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        uploadArea.classList.add('drag-over');
+    });
+
+    uploadArea.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+    });
+
+    uploadArea.addEventListener('drop', function(e) {
+        e.preventDefault();
+        uploadArea.classList.remove('drag-over');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(files[0]);
+        }
+    });
+
+    // Handle file input change
+    fileInput.addEventListener('change', function(e) {
+        if (e.target.files.length > 0) {
+            handleFileSelect(e.target.files[0]);
+        }
+    });
+
+    // Handle remove image
+    removeImage.addEventListener('click', function() {
+        fileInput.value = '';
+        imagePreview.style.display = 'none';
+        uploadContent.style.display = 'block';
+    });
+
+    function handleFileSelect(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                uploadContent.style.display = 'none';
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+});
+</script>
+{% endblock %}

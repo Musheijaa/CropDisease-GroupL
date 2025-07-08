@@ -1,0 +1,404 @@
+/* Custom CSS for FloraSight */
+
+:root {
+    --primary-green: #28a745;
+    --secondary-green: #20c997;
+    --dark-green: #155724;
+    --light-green: #d4edda;
+    --gradient-green: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 76px;
+}
+
+.main-content {
+    min-height: calc(100vh - 200px);
+}
+
+/* Navigation */
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+/* Hero Section */
+.hero-section {
+    background: var(--gradient-green);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-gradient-success {
+    background: var(--gradient-green) !important;
+}
+
+.hero-content {
+    z-index: 2;
+    position: relative;
+}
+
+.stat-item h3 {
+    font-size: 2rem;
+    margin-bottom: 0;
+}
+
+.hero-buttons .btn {
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Floating Cards Animation */
+.hero-image {
+    position: relative;
+    height: 500px;
+}
+
+.floating-cards {
+    position: relative;
+    height: 100%;
+}
+
+.diagnosis-card {
+    position: absolute;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    animation: float 3s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+}
+
+.healthy-card {
+    top: 20%;
+    right: 10%;
+    animation-delay: 0s;
+}
+
+.disease-card {
+    top: 50%;
+    left: 5%;
+    animation-delay: 1s;
+}
+
+.confidence-card {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 2s;
+}
+
+.diagnosis-card .card-icon {
+    font-size: 1.5rem;
+}
+
+.diagnosis-card .card-content h6 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.diagnosis-card .card-content small {
+    color: #6c757d;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Feature Cards */
+.feature-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    border: 1px solid #e9ecef;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: var(--light-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.feature-card h4 {
+    color: var(--dark-green);
+    margin-bottom: 1rem;
+}
+
+/* Dashboard Styles */
+.stat-card {
+    background: var(--primary-green);
+    color: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+}
+
+.stat-card.bg-primary { background: #007bff !important; }
+.stat-card.bg-success { background: var(--primary-green) !important; }
+.stat-card.bg-warning { background: #ffc107 !important; }
+.stat-card.bg-info { background: #17a2b8 !important; }
+
+.stat-icon {
+    font-size: 2.5rem;
+    opacity: 0.8;
+}
+
+.stat-content h3 {
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 700;
+}
+
+.stat-content p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+/* Diagnosis Table */
+.diagnosis-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* Disease Statistics */
+.disease-stat-item {
+    padding: 0.5rem 0;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+
+/* Upload Area */
+.upload-area {
+    border: 2px dashed #dee2e6;
+    border-radius: 15px;
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    background: #f8f9fa;
+}
+
+.upload-area:hover,
+.upload-area.drag-over {
+    border-color: var(--primary-green);
+    background: var(--light-green);
+}
+
+.upload-area input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.image-preview {
+    position: relative;
+}
+
+.image-preview img {
+    max-height: 300px;
+    border-radius: 10px;
+}
+
+.remove-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-success {
+    background: var(--gradient-green);
+    border: none;
+}
+
+.btn-success:hover {
+    background: var(--dark-green);
+    transform: translateY(-1px);
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-section {
+        text-align: center;
+    }
+    
+    .hero-image {
+        margin-top: 2rem;
+        height: 300px;
+    }
+    
+    .floating-cards {
+        display: none;
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+    
+    .feature-card {
+        margin-bottom: 2rem;
+    }
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.form-label {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Loading States */
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Diagnosis Detail Styles */
+.diagnosis-detail-image {
+    max-width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.confidence-meter {
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.confidence-fill {
+    height: 100%;
+    background: var(--gradient-green);
+    transition: width 0.5s ease;
+}
+
+/* Status Badges */
+.badge {
+    font-size: 0.75em;
+    padding: 0.5em 0.75em;
+    border-radius: 6px;
+}
+
+/* Print Styles */
+@media print {
+    .navbar, .btn, footer {
+        display: none !important;
+    }
+    
+    .main-content {
+        padding-top: 0 !important;
+    }
+}

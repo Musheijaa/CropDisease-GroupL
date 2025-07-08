@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Diagnosis Detail - FloraSight{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-microscope me-2 text-success"></i>Diagnosis Details
+                </h1>
+                <a href="{% url 'crops:diagnosis_history' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to History
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Image and Basic Info -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-image me-2"></i>Crop Image
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ diagnosis.crop_image.url }}" 
+                         alt="Crop Image" 
+                         class="diagnosis-detail-image mb-3">
+                    
+                    <div class="row text-start">
+                        <div class="col-6">
+                            <strong>Upload Date:</strong><br>
+                            {{ diagnosis.created_at|date:"M d, Y H:i" }}
+                        </div>
+                        <div class="col-6">
+                            <strong>Status:</strong><br>
+                            <span class="badge bg-{% if diagnosis.status == 'completed' %}success{% elif diagnosis.status == 'processing' %}warning{% else %}danger{% endif %}">
+                                {{ diagnosis.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Diagnosis Results -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-stethoscope me-2"></i>Diagnosis Results
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if diagnosis.status == 'completed' %}
+                        {% if diagnosis.predicted_disease %}
+                        <div class="mb-3">
+                            <strong>Detected Disease:</strong>
+                            <h4 class="text-danger">{{ diagnosis.predicted_disease.name }}</h4>
+                        </div>
+
+                        {% if diagnosis.confidence_score %}
+                        <div class="mb-3">
+                            <strong>Confidence Score:</strong>
+                            <div class="confidence-meter mt-2">
+                                <div class="confidence-fill" style="width: {{ diagnosis.confidence_score }}%"></div>
+                            </div>
+                            <small class="text-muted">{{ diagnosis.confidence_score|floatformat:1 }}% confidence</small>
+                        </div>
+                        {% endif %}
+
+                        {% if diagnosis.severity_level %}
+                        <div class="mb-3">
+                            <strong>Severity Level:</strong>
+                            <span class="badge bg-warning">{{ diagnosis.severity_level }}</span>
+                        </div>
+                        {% endif %}
+
+                        {% if diagnosis.affected_area_percentage %}
+                        <div class="mb-3">
+                            <strong>Affected Area:</strong>
+                            {{ diagnosis.affected_area_percentage|floatformat:1 }}%
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                            <h5 class="text-success">Healthy Plant Detected</h5>
+                            <p class="text-muted">No diseases were found in this image.</p>
+                        </div>
+                        {% endif %}
+                    {% elif diagnosis.status == 'processing' %}
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5>Processing...</h5>
+                        <p class="text-muted">Your image is being analyzed. Please wait.</p>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                        <h5 class="text-danger">Analysis Failed</h5>
+                        <p class="text-muted">There was an error processing your image.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Environmental Data -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-thermometer-half me-2"></i>Environmental Data
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <strong>Temperature:</strong><br>
+                            {% if diagnosis.temperature %}
+                                {{ diagnosis.temperature }}°C
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Humidity:</strong><br>
+                            {% if diagnosis.humidity %}
+                                {{ diagnosis.humidity }}%
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <strong>Soil pH:</strong><br>
+                            {% if diagnosis.soil_ph %}
+                                {{ diagnosis.soil_ph }}
+                            {% else %}
+                                <span class="text-muted">Not provided</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if diagnosis.crop_type %}
+                    <div class="mt-3">
+                        <strong>Crop Type:</strong><br>
+                        {{ diagnosis.crop_type.name }}
+                    </div>
+                    {% endif %}
+
+                    {% if diagnosis.notes %}
+                    <div class="mt-3">
+                        <strong>Notes:</strong><br>
+                        {{ diagnosis.notes }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-prescription-bottle-alt me-2"></i>Recommendations
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recommendation %}
+                    <div class="mb-3">
+                        <strong>Treatment Plan:</strong>
+                        <p>{{ recommendation.treatment_plan }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Preventive Measures:</strong>
+                        <p>{{ recommendation.preventive_measures }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Follow-up Actions:</strong>
+                        <p>{{ recommendation.follow_up_actions }}</p>
+                    </div>
+
+                    {% if recommendation.estimated_recovery_time %}
+                    <div class="mb-3">
+                        <strong>Estimated Recovery Time:</strong>
+                        {{ recommendation.estimated_recovery_time }}
+                    </div>
+                    {% endif %}
+
+                    {% if recommendation.cost_estimate %}
+                    <div class="mb-3">
+                        <strong>Estimated Cost:</strong>
+                        ${{ recommendation.cost_estimate }}
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-info-circle fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">
+                            {% if diagnosis.status == 'completed' %}
+                                No specific recommendations available for this diagnosis.
+                            {% else %}
+                                Recommendations will be available once the analysis is complete.
+                            {% endif %}
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

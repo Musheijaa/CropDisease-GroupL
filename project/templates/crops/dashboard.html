@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - FloraSight{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="fas fa-tachometer-alt me-2 text-success"></i>Dashboard
+                </h1>
+                <a href="{% url 'crops:upload_image' %}" class="btn btn-success">
+                    <i class="fas fa-camera me-2"></i>New Diagnosis
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-microscope"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ total_diagnoses }}</h3>
+                    <p>Total Diagnoses</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-success">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ completed_diagnoses }}</h3>
+                    <p>Completed</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ processing_diagnoses }}</h3>
+                    <p>Processing</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-3 col-md-6 mb-3">
+            <div class="stat-card bg-info">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ disease_stats|length }}</h3>
+                    <p>Disease Types</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Diagnoses -->
+        <div class="col-lg-8 mb-4">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Diagnoses
+                    </h5>
+                    <a href="{% url 'crops:diagnosis_history' %}" class="btn btn-sm btn-outline-primary">
+                        View All
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_diagnoses %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Crop Type</th>
+                                    <th>Disease</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for diagnosis in recent_diagnoses %}
+                                <tr>
+                                    <td>
+                                        <img src="{{ diagnosis.crop_image.url }}" 
+                                             alt="Crop" class="diagnosis-thumb">
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.crop_type %}
+                                            {{ diagnosis.crop_type.name }}
+                                        {% else %}
+                                            <span class="text-muted">Unknown</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.predicted_disease %}
+                                            <span class="badge bg-danger">{{ diagnosis.predicted_disease.name }}</span>
+                                        {% else %}
+                                            <span class="text-muted">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if diagnosis.status == 'completed' %}success{% elif diagnosis.status == 'processing' %}warning{% else %}danger{% endif %}">
+                                            {{ diagnosis.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ diagnosis.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'crops:diagnosis_detail' diagnosis.id %}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-camera fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No diagnoses yet</h5>
+                        <p class="text-muted">Upload your first crop image to get started!</p>
+                        <a href="{% url 'crops:upload_image' %}" class="btn btn-success">
+                            <i class="fas fa-camera me-2"></i>Upload Image
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Disease Statistics -->
+        <div class="col-lg-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Disease Distribution
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if disease_stats %}
+                    {% for stat in disease_stats %}
+                    <div class="disease-stat-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-medium">{{ stat.predicted_disease__name }}</span>
+                            <span class="badge bg-primary">{{ stat.count }}</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success" 
+                                 style="width: {{ stat.count|divisibleby:total_diagnoses|floatformat:2 }}%;"></div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-2x text-muted mb-3"></i>
+                        <p class="text-muted">No disease data available yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'crops:upload_image' %}" class="btn btn-success">
+                            <i class="fas fa-camera me-2"></i>New Diagnosis
+                        </a>
+                        <a href="{% url 'crops:diagnosis_history' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-history me-2"></i>View History
+                        </a>
+                        <a href="{% url 'crops:profile' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-user-edit me-2"></i>Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
