@@ -1,0 +1,141 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}System Settings - FloraSight Admin{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+
+{% block content %}
+<!-- Add New Setting -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-plus me-2"></i>Add/Update Setting
+            </h5>
+            
+            <form method="post" class="row g-3">
+                {% csrf_token %}
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="key" 
+                           placeholder="Setting Key" required>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="value" 
+                           placeholder="Setting Value" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" name="description" 
+                           placeholder="Description (optional)">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Current Settings -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-cog me-2"></i>Current Settings ({{ settings_list.count }})
+            </h5>
+            
+            {% if settings_list %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Key</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                            <th>Updated By</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for setting in settings_list %}
+                        <tr>
+                            <td>
+                                <code class="text-primary">{{ setting.key }}</code>
+                            </td>
+                            <td>
+                                <span class="text-truncate d-inline-block" style="max-width: 200px;">
+                                    {{ setting.value }}
+                                </span>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ setting.description|default:"-" }}</small>
+                            </td>
+                            <td>
+                                {% if setting.updated_by %}
+                                    {{ setting.updated_by.username }}
+                                {% else %}
+                                    <span class="text-muted">System</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ setting.updated_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/admin/crops/systemsettings/{{ setting.id }}/change/" 
+                                       class="btn btn-outline-primary" title="Edit" target="_blank">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/admin/crops/systemsettings/{{ setting.id }}/delete/" 
+                                       class="btn btn-outline-danger" title="Delete" target="_blank">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-cog fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No settings configured</h5>
+                <p class="text-muted">Add your first system setting using the form above.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Common Settings Examples -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-lightbulb me-2 text-warning"></i>Common Settings Examples
+            </h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>System Configuration</h6>
+                    <ul class="list-unstyled">
+                        <li><code>max_upload_size</code> - Maximum file upload size</li>
+                        <li><code>ml_model_url</code> - ML model API endpoint</li>
+                        <li><code>confidence_threshold</code> - Minimum confidence score</li>
+                        <li><code>maintenance_mode</code> - Enable/disable maintenance</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Feature Flags</h6>
+                    <ul class="list-unstyled">
+                        <li><code>enable_iot_integration</code> - IoT device support</li>
+                        <li><code>enable_notifications</code> - Email notifications</li>
+                        <li><code>enable_analytics</code> - Analytics tracking</li>
+                        <li><code>enable_api</code> - Public API access</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

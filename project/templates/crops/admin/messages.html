@@ -1,0 +1,120 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}System Messages - FloraSight Admin{% endblock %}
+{% block page_title %}System Messages{% endblock %}
+
+{% block content %}
+<!-- Filter -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-envelope me-2"></i>System Messages ({{ page_obj.paginator.count }})
+                </h5>
+                <a href="/admin/crops/systemmessage/add/" class="btn btn-success" target="_blank">
+                    <i class="fas fa-plus me-2"></i>Add Message
+                </a>
+            </div>
+            
+            <form method="get" class="row g-3">
+                <div class="col-md-10">
+                    <select class="form-control" name="type">
+                        <option value="">All Message Types</option>
+                        <option value="info" {% if message_type == 'info' %}selected{% endif %}>Information</option>
+                        <option value="warning" {% if message_type == 'warning' %}selected{% endif %}>Warning</option>
+                        <option value="error" {% if message_type == 'error' %}selected{% endif %}>Error</option>
+                        <option value="success" {% if message_type == 'success' %}selected{% endif %}>Success</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Messages List -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            {% if page_obj %}
+            {% for message in page_obj %}
+            <div class="activity-item">
+                <div class="activity-icon {% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% elif message.message_type == 'success' %}success{% else %}info{% endif %}">
+                    <i class="fas fa-{% if message.message_type == 'error' %}exclamation-triangle{% elif message.message_type == 'warning' %}exclamation-circle{% elif message.message_type == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fw-medium">{{ message.title }}</div>
+                            <div class="text-muted">{{ message.message }}</div>
+                            <div class="small text-muted mt-1">
+                                {% if message.user %}
+                                    For: {{ message.user.username }} • 
+                                {% endif %}
+                                {{ message.created_at|date:"M d, Y H:i" }}
+                                {% if not message.is_read %}
+                                    • <span class="badge bg-primary">Unread</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/admin/crops/systemmessage/{{ message.id }}/change/" 
+                               class="btn btn-outline-primary" title="Edit" target="_blank">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/admin/crops/systemmessage/{{ message.id }}/delete/" 
+                               class="btn btn-outline-danger" title="Delete" target="_blank">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Message pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if message_type %}&type={{ message_type }}{% endif %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if message_type %}&type={{ message_type }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if message_type %}&type={{ message_type }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if message_type %}&type={{ message_type }}{% endif %}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No messages found</h5>
+                <p class="text-muted">No system messages to display.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

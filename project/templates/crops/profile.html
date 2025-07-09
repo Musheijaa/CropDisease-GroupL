@@ -74,37 +74,35 @@
                 </div>
             </div>
 
-            <!-- Account Statistics -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-chart-bar me-2"></i>Account Statistics
-                    </h5>
+           <!-- Account Statistics -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Account Statistics
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <h3 class="text-primary">{{ total_diagnoses }}</h3>
+                    <p class="text-muted">Total Diagnoses</p>
                 </div>
-                <div class="card-body">
-                    <div class="row text-center">
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="text-primary">{{ user.diagnosis_set.count }}</h3>
-                                <p class="text-muted">Total Diagnoses</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="text-success">{{ user.diagnosis_set.filter.status='completed'.count }}</h3>
-                                <p class="text-muted">Completed</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="stat-item">
-                                <h3 class="text-info">{{ profile.created_at|date:"M Y" }}</h3>
-                                <p class="text-muted">Member Since</p>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <h3 class="text-success">{{ completed_diagnoses }}</h3>
+                    <p class="text-muted">Completed</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <h3 class="text-info">{{ profile.created_at|date:"M Y" }}</h3>
+                    <p class="text-muted">Member Since</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+{%endblock%}

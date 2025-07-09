@@ -1,0 +1,149 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Edit User - FloraSight Admin{% endblock %}
+{% block page_title %}Edit User: {{ user_obj.username }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-edit me-2"></i>Edit User: {{ user_obj.username }}
+                </h5>
+                <a href="{% url 'crops:admin_users' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Users
+                </a>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <!-- Basic User Information -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Username</label>
+                        <input type="text" class="form-control" value="{{ user_obj.username }}" readonly>
+                        <div class="form-text">Username cannot be changed</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" 
+                               value="{{ user_obj.email }}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name" class="form-label fw-bold">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" 
+                               value="{{ user_obj.first_name }}">
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="last_name" class="form-label fw-bold">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" 
+                               value="{{ user_obj.last_name }}">
+                    </div>
+                </div>
+
+                <!-- User Status -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" 
+                                   {% if user_obj.is_active %}checked{% endif %}>
+                            <label class="form-check-label fw-bold" for="is_active">
+                                Active User
+                            </label>
+                            <div class="form-text">Inactive users cannot log in</div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="is_staff" name="is_staff" 
+                                   {% if user_obj.is_staff %}checked{% endif %}>
+                            <label class="form-check-label fw-bold" for="is_staff">
+                                Staff Member
+                            </label>
+                            <div class="form-text">Staff members can access admin panel</div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <!-- Profile Information -->
+                <h6 class="mb-3">Profile Information</h6>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ profile_form.phone_number.id_for_label }}" class="form-label fw-bold">
+                            Phone Number
+                        </label>
+                        {{ profile_form.phone_number }}
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="{{ profile_form.user_type.id_for_label }}" class="form-label fw-bold">
+                            User Type
+                        </label>
+                        {{ profile_form.user_type }}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="{{ profile_form.location.id_for_label }}" class="form-label fw-bold">
+                            Location
+                        </label>
+                        {{ profile_form.location }}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="{{ profile_form.farm_size.id_for_label }}" class="form-label fw-bold">
+                            Farm Size (acres)
+                        </label>
+                        {{ profile_form.farm_size }}
+                    </div>
+                </div>
+
+                <!-- User Statistics -->
+                <hr class="my-4">
+                <h6 class="mb-3">User Statistics</h6>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="stat-number text-primary">{{ total_diagnoses }}</div>
+                            <div class="stat-label">Total Diagnoses</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="stat-number text-success">{{ completed_diagnoses }}</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="stat-number text-info">{{ user_obj.date_joined|date:"M Y" }}</div>
+                            <div class="stat-label">Member Since</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="{% url 'crops:admin_users' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Update User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

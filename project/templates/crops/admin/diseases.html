@@ -1,0 +1,129 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Disease Management - FloraSight Admin{% endblock %}
+{% block page_title %}Disease Management{% endblock %}
+
+{% block content %}
+<!-- Search -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">
+                    <i class="fas fa-virus me-2"></i>Diseases ({{ page_obj.paginator.count }})
+                </h5>
+                <a href="/admin/crops/disease/add/" class="btn btn-success" target="_blank">
+                    <i class="fas fa-plus me-2"></i>Add Disease
+                </a>
+            </div>
+            
+            <form method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text" class="form-control" name="search" 
+                           value="{{ search_query }}" placeholder="Search diseases...">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Diseases Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            {% if page_obj %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Disease Name</th>
+                            <th>Crop Type</th>
+                            <th>Symptoms</th>
+                            <th>Diagnoses Count</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for disease in page_obj %}
+                        <tr>
+                            <td>
+                                <div class="fw-medium">{{ disease.name }}</div>
+                                {% if disease.description %}
+                                <small class="text-muted">{{ disease.description|truncatewords:10 }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ disease.crop_type.name }}</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ disease.symptoms|truncatewords:8 }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ disease.diagnosis_set.count }}</span>
+                            </td>
+                            <td>{{ disease.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="/admin/crops/disease/{{ disease.id }}/change/" 
+                                       class="btn btn-outline-primary" title="Edit" target="_blank">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="/admin/crops/disease/{{ disease.id }}/delete/" 
+                                       class="btn btn-outline-danger" title="Delete" target="_blank">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj.has_other_pages %}
+            <nav aria-label="Disease pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-virus fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No diseases found</h5>
+                <p class="text-muted">Try adjusting your search criteria.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
