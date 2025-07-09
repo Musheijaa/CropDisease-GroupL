@@ -45,6 +45,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'crops:diagnosis_history' %}">My Diagnoses</a>
                     </li>
+                    {% if user.is_staff %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'crops:admin_panel' %}">Admin Panel</a>
+                    </li>
+                    {% endif %}
                     {% endif %}
                 </ul>
                 
@@ -102,7 +107,7 @@
                     <p class="mb-0">AI-powered crop disease detection for modern agriculture.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="mb-0">&copy; 2024 FloraSight. All rights reserved.</p>
+                    <p class="mb-0">&copy; 2025 FloraSight. All rights reserved.</p>
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import UserProfile, CropType, Disease, Diagnosis, Recommendation, IoTDevice, IoTReading
+from django.contrib.auth.models import User
+from .models import UserProfile, CropType, Disease, Diagnosis, Recommendation, IoTDevice, IoTReading, SystemMessage, SystemSettings
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
@@ -41,3 +42,16 @@ class IoTReadingAdmin(admin.ModelAdmin):
     list_display = ['device', 'temperature', 'humidity', 'soil_moisture', 'timestamp']
     list_filter = ['device__device_type', 'timestamp']
     search_fields = ['device__device_id']
+
+@admin.register(SystemMessage)
+class SystemMessageAdmin(admin.ModelAdmin):
+    list_display = ['title', 'message_type', 'user', 'is_read', 'created_at']
+    list_filter = ['message_type', 'is_read', 'created_at']
+    search_fields = ['title', 'message']
+    readonly_fields = ['created_at']
+
+@admin.register(SystemSettings)
+class SystemSettingsAdmin(admin.ModelAdmin):
+    list_display = ['key', 'value', 'updated_by', 'updated_at']
+    search_fields = ['key', 'description']
+    readonly_fields = ['updated_at']

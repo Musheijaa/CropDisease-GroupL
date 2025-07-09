@@ -1,0 +1,606 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Admin Dashboard - FloraSight{% endblock %}
+{% block page_title %}Agricultural Insights Overview{% endblock %}
+
+{% block content %}
+<!-- Hero Stats Section -->
+<div class="admin-hero-stats mb-5">
+    <div class="row g-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card-admin stat-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_users|default:"0" }}</div>
+                    <div class="stat-label">Total Users</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last month
+                    </div>
+                </div>
+                <div class="stat-decoration leaf-1"></div>
+                <div class="stat-decoration leaf-2"></div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card-admin stat-success">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ active_users|default:"0" }}</div>
+                    <div class="stat-label">Active Users</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 8% from last month
+                    </div>
+                </div>
+                <div class="stat-decoration leaf-1"></div>
+                <div class="stat-decoration leaf-2"></div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card-admin stat-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-bug"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ disease_types|default:"0" }}</div>
+                    <div class="stat-label">Disease Types</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 2 new this month
+                    </div>
+                </div>
+                <div class="stat-decoration leaf-1"></div>
+                <div class="stat-decoration leaf-2"></div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="stat-card-admin stat-info">
+                <div class="stat-icon">
+                    <i class="fas fa-microscope"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">{{ total_diagnoses|default:"0" }}</div>
+                    <div class="stat-label">Diagnoses</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 24% from last month
+                    </div>
+                </div>
+                <div class="stat-decoration leaf-1"></div>
+                <div class="stat-decoration leaf-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- User Growth Chart -->
+    <div class="col-lg-8">
+        <div class="admin-chart-container">
+            <div class="chart-header">
+                <h5>
+                    <i class="fas fa-seedling me-2"></i>User Growth & Activity
+                </h5>
+                <div class="chart-actions">
+                    <button class="btn btn-sm btn-outline-success">Weekly</button>
+                    <button class="btn btn-sm btn-success">Monthly</button>
+                    <button class="btn btn-sm btn-outline-success">Yearly</button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <canvas id="userGrowthChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="col-lg-4">
+        <div class="admin-chart-container">
+            <div class="chart-header">
+                <h5>
+                    <i class="fas fa-leaf me-2"></i>Recent Activity
+                </h5>
+            </div>
+            <div class="chart-body">
+                <div class="activity-list">
+                    {% for user in recent_users %}
+                    <div class="activity-item">
+                        <div class="activity-icon bg-success-light">
+                            <i class="fas fa-user-plus text-success"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">New User Registered</div>
+                            <div class="activity-desc">{{ user.username }} joined FloraSight</div>
+                            <div class="activity-time">{{ user.date_joined|timesince }} ago</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    
+                    {% for diagnosis in recent_diagnoses|slice:":3" %}
+                    <div class="activity-item">
+                        <div class="activity-icon bg-info-light">
+                            <i class="fas fa-microscope text-info"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Plant Diagnosis</div>
+                            <div class="activity-desc">{{ diagnosis.user.username }} uploaded image</div>
+                            <div class="activity-time">{{ diagnosis.created_at|timesince }} ago</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-4">
+    <!-- Disease Distribution -->
+    <div class="col-lg-6">
+        <div class="admin-chart-container">
+            <div class="chart-header">
+                <h5>
+                    <i class="fas fa-chart-pie me-2"></i>Disease Distribution
+                </h5>
+                <div class="chart-actions">
+                    <button class="btn btn-sm btn-outline-warning">View Details</button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <canvas id="diseaseChart" height="150"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Messages -->
+    <div class="col-lg-6">
+        <div class="admin-chart-container">
+            <div class="chart-header">
+                <h5>
+                    <i class="fas fa-envelope me-2"></i>Recent Messages
+                </h5>
+                <div class="chart-actions">
+                    <button class="btn btn-sm btn-outline-primary">View All</button>
+                </div>
+            </div>
+            <div class="chart-body">
+                <div class="activity-list">
+                    {% for message in recent_messages %}
+                    <div class="activity-item">
+                        <div class="activity-icon bg-{% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% else %}info{% endif %}-light">
+                            <i class="fas fa-{% if message.message_type == 'error' %}exclamation-triangle{% elif message.message_type == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} text-{% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% else %}info{% endif %}"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">{{ message.title }}</div>
+                            <div class="activity-desc">{{ message.message|truncatewords:10 }}</div>
+                            <div class="activity-time">{{ message.created_at|timesince }} ago</div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state text-center py-4">
+                        <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
+                        <p class="text-muted mb-0">No recent messages</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --agri-primary: #2E7D32;
+        --agri-primary-light: #4CAF50;
+        --agri-secondary: #FFC107;
+        --agri-tertiary: #2196F3;
+        --agri-dark: #1B5E20;
+        --agri-light: #E8F5E9;
+        --agri-success: #4CAF50;
+        --agri-warning: #FFC107;
+        --agri-danger: #F44336;
+        --agri-info: #2196F3;
+    }
+
+    /* Admin Stats Cards */
+    .admin-hero-stats {
+        margin-top: 1rem;
+    }
+
+    .stat-card-admin {
+        border-radius: 12px;
+        padding: 1.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card-admin:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-primary {
+        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    }
+
+    .stat-success {
+        background: linear-gradient(135deg, #8BC34A, #689F38);
+    }
+
+    .stat-warning {
+        background: linear-gradient(135deg, #FFC107, #FFA000);
+    }
+
+    .stat-info {
+        background: linear-gradient(135deg, #2196F3, #1565C0);
+    }
+
+    .stat-icon {
+        font-size: 1.75rem;
+        opacity: 0.8;
+        margin-bottom: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-change {
+        font-size: 0.75rem;
+        opacity: 0.9;
+    }
+
+    .stat-change.positive {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .stat-change.negative {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .stat-decoration {
+        position: absolute;
+        opacity: 0.1;
+    }
+
+    .leaf-1 {
+        top: -20px;
+        right: -20px;
+        width: 80px;
+        height: 80px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .leaf-2 {
+        bottom: -10px;
+        right: 10px;
+        width: 60px;
+        height: 60px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z' /%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: contain;
+        transform: rotate(30deg);
+    }
+
+    /* Chart Containers */
+    .admin-chart-container {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        height: 100%;
+    }
+
+    .chart-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .chart-header h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        color: var(--agri-dark);
+    }
+
+    .chart-header h5 i {
+        margin-right: 0.75rem;
+        color: var(--agri-primary);
+    }
+
+    .chart-actions .btn {
+        margin-left: 0.5rem;
+    }
+
+    .chart-body {
+        padding: 1.5rem;
+    }
+
+    /* Activity List */
+    .activity-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 0.75rem;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .activity-item:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .bg-success-light {
+        background-color: rgba(76, 175, 80, 0.1);
+    }
+
+    .bg-info-light {
+        background-color: rgba(33, 150, 243, 0.1);
+    }
+
+    .bg-warning-light {
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .bg-danger-light {
+        background-color: rgba(244, 67, 54, 0.1);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-weight: 500;
+        margin-bottom: 0.1rem;
+    }
+
+    .activity-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-bottom: 0.1rem;
+    }
+
+    .activity-time {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 1rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .stat-card-admin {
+            padding: 1.25rem;
+        }
+        
+        .stat-number {
+            font-size: 1.75rem;
+        }
+        
+        .chart-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .chart-actions {
+            margin-top: 0.5rem;
+            align-self: flex-end;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // User Growth Chart
+    const userGrowthCtx = document.getElementById('userGrowthChart');
+    if (userGrowthCtx) {
+        const userGrowthData = JSON.parse('{{ user_growth_data|escapejs }}');
+        
+        new Chart(userGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: userGrowthData.map(item => item.month),
+                datasets: [{
+                    label: 'Total Users',
+                    data: userGrowthData.map(item => item.total_users),
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#4CAF50',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }, {
+                    label: 'Active Users',
+                    data: userGrowthData.map(item => item.active_users),
+                    borderColor: '#FFC107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.05)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#FFC107',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        titleFont: { size: 14 },
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 4
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false,
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            padding: 10
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10
+                        }
+                    }
+                },
+                elements: {
+                    line: {
+                        borderWidth: 2
+                    }
+                }
+            }
+        });
+    }
+
+    // Disease Distribution Chart
+    const diseaseCtx = document.getElementById('diseaseChart');
+    if (diseaseCtx) {
+        const diseaseData = JSON.parse('{{ disease_stats|escapejs }}');
+        
+        new Chart(diseaseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: diseaseData.map(item => item.predicted_disease__name),
+                datasets: [{
+                    data: diseaseData.map(item => item.count),
+                    backgroundColor: [
+                        '#4CAF50', '#8BC34A', '#CDDC39', '#FFC107',
+                        '#FF9800', '#FF5722', '#F44336', '#9C27B0',
+                        '#673AB7', '#3F51B5', '#2196F3', '#03A9F4',
+                        '#00BCD4', '#009688'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        bodyFont: { size: 12 },
+                        padding: 12,
+                        cornerRadius: 4,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+    }
+    
+    // Animate stats cards on scroll
+    const animateStats = function() {
+        const statCards = document.querySelectorAll('.stat-card-admin');
+        statCards.forEach((card, index) => {
+            const cardPosition = card.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            
+            if (cardPosition < screenPosition) {
+                card.style.transform = 'translateY(0)';
+                card.style.opacity = '1';
+            }
+        });
+    };
+    
+    window.addEventListener('scroll', animateStats);
+    animateStats(); // Initialize
+});
+</script>
+{% endblock %}
