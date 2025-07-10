@@ -3,23 +3,276 @@
 {% block title %}System Messages - FloraSight Admin{% endblock %}
 {% block page_title %}System Messages{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Agricultural theme matching dashboard, base_admin, and diagnosis_management */
+    :root {
+        --dark-green: #1B5E20; /* Deep forest green */
+        --medium-green: #2E7D32; /* Rich green */
+        --light-green: #4CAF50; /* Lighter green */
+        --accent-green: #689F38; /* Agricultural accent */
+        --background-white: #ffffff; /* White background */
+        --text-black: #000000; /* Black text for contrast */
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Chart Container (used for filter and messages list) */
+    .chart-container {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-3px);
+    }
+
+    .chart-container h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* Filter Form */
+    .form-control, .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        color: var(--text-black);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--medium-green);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        outline: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--light-green) 0%, var(--accent-green) 100%);
+    }
+
+    /* Messages List */
+    .activity-item {
+        background: var(--background-white);
+        border-left: 4px solid var(--medium-green);
+        border-radius: 10px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .activity-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+
+    .activity-icon.success {
+        background: var(--light-green);
+    }
+
+    .activity-icon.info {
+        background: var(--accent-green);
+    }
+
+    .activity-icon.warning {
+        background: #e09b3d;
+    }
+
+    .activity-icon.danger {
+        background: #d15a3f;
+    }
+
+    .fw-medium {
+        font-weight: 500;
+        color: var(--text-black);
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary {
+        background: var(--accent-green) !important;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    /* Action Buttons */
+    .btn-group .btn {
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--accent-green);
+        color: white;
+    }
+
+    .btn-outline-danger {
+        border-color: #d15a3f;
+        color: #d15a3f;
+    }
+
+    .btn-outline-danger:hover {
+        background: #d15a3f;
+        color: white;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        color: var(--text-black);
+        font-weight: 500;
+        margin: 0 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+        background: var(--light-green);
+        color: white;
+        border-color: var(--light-green);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--medium-green);
+        border-color: var(--medium-green);
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 3rem;
+        background: var(--background-white);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .empty-state h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .chart-container {
+            padding: 1.5rem;
+        }
+
+        .chart-container h5 {
+            font-size: 1.1rem;
+        }
+
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .btn-primary, .btn-success {
+            padding: 0.6rem 1rem;
+        }
+
+        .activity-item {
+            padding: 1rem;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .fw-medium, .text-muted {
+            font-size: 0.8rem;
+        }
+
+        .btn-group .btn {
+            padding: 0.4rem 0.6rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Filter -->
-<div class="row mb-4">
+<div class="row mb-4" data-aos="fade-up">
     <div class="col-12">
         <div class="chart-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">
-                    <i class="fas fa-envelope me-2"></i>System Messages ({{ page_obj.paginator.count }})
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope.svg" class="me-2" style="width: 24px; height: 24px;" alt="Messages Icon"> System Messages ({{ page_obj.paginator.count }})
                 </h5>
                 <a href="/admin/crops/systemmessage/add/" class="btn btn-success" target="_blank">
-                    <i class="fas fa-plus me-2"></i>Add Message
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/plus.svg" class="me-2" style="width: 20px; height: 20px;" alt="Add Icon"> Add Message
                 </a>
             </div>
             
             <form method="get" class="row g-3">
                 <div class="col-md-10">
-                    <select class="form-control" name="type">
+                    <select class="form-select" name="type">
                         <option value="">All Message Types</option>
                         <option value="info" {% if message_type == 'info' %}selected{% endif %}>Information</option>
                         <option value="warning" {% if message_type == 'warning' %}selected{% endif %}>Warning</option>
@@ -29,7 +282,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-filter"></i> Filter
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/funnel.svg" class="me-2" style="width: 20px; height: 20px;" alt="Filter Icon"> Filter
                     </button>
                 </div>
             </form>
@@ -38,14 +291,14 @@
 </div>
 
 <!-- Messages List -->
-<div class="row">
+<div class="row" data-aos="fade-up" data-aos-delay="100">
     <div class="col-12">
         <div class="chart-container">
             {% if page_obj %}
             {% for message in page_obj %}
             <div class="activity-item">
                 <div class="activity-icon {% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% elif message.message_type == 'success' %}success{% else %}info{% endif %}">
-                    <i class="fas fa-{% if message.message_type == 'error' %}exclamation-triangle{% elif message.message_type == 'warning' %}exclamation-circle{% elif message.message_type == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/{% if message.message_type == 'error' %}exclamation-triangle{% elif message.message_type == 'warning' %}exclamation-circle{% elif message.message_type == 'success' %}check-circle{% else %}information-circle{% endif %}.svg" style="width: 24px; height: 24px;" alt="{{ message.message_type|title }} Icon">
                 </div>
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-start">
@@ -65,11 +318,11 @@
                         <div class="btn-group btn-group-sm">
                             <a href="/admin/crops/systemmessage/{{ message.id }}/change/" 
                                class="btn btn-outline-primary" title="Edit" target="_blank">
-                                <i class="fas fa-edit"></i>
+                                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/pencil.svg" style="width: 16px; height: 16px;" alt="Edit Icon">
                             </a>
                             <a href="/admin/crops/systemmessage/{{ message.id }}/delete/" 
                                class="btn btn-outline-danger" title="Delete" target="_blank">
-                                <i class="fas fa-trash"></i>
+                                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/trash.svg" style="width: 16px; height: 16px;" alt="Delete Icon">
                             </a>
                         </div>
                     </div>
@@ -108,8 +361,8 @@
             </nav>
             {% endif %}
             {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-envelope fa-3x text-muted mb-3"></i>
+            <div class="text-center py-5 empty-state">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope.svg" class="mb-3" style="width: 48px; height: 48px;" alt="No Messages Icon">
                 <h5 class="text-muted">No messages found</h5>
                 <p class="text-muted">No system messages to display.</p>
             </div>

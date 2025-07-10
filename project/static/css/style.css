@@ -402,3 +402,56 @@ footer {
         padding-top: 0 !important;
     }
 }
+/* Notification dropdown styling */
+.dropdown-menu-notifications {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-icon {
+    font-size: 1.25rem;
+    margin-top: 3px;
+}
+/* Notification styling */
+.notification-item {
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: #f8f9fa !important;
+}
+
+.list-group-item {
+    padding: 1.25rem 1.5rem;
+}
+
+/* Message icons */
+.fa-leaf {
+    color: #28a745;
+}
+
+.fa-cloud-rain {
+    color: #17a2b8;
+}
+
+.fa-server {
+    color: #6c757d;
+}
+
+/* Pagination */
+.pagination .page-item.active .page-link {
+    background-color: #20c997;
+    border-color: #20c997;
+}
+
+.pagination .page-link {
+    color: #20c997;
+}

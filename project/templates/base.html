@@ -5,119 +5,578 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}FloraSight - AI-Powered Crop Disease Detection{% endblock %}</title>
-    
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        :root {
+            --primary-green: #2d5a3d;
+            --accent-green: #4a7c59;
+            --light-green: #8fbc8f;
+            --gold: #d4af37;
+            --earth-brown: #8b4513;
+            --cream: #f8f6f0;
+            --soft-gray: #6c757d;
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Enhanced Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%) !important;
+            box-shadow: 0 4px 20px rgba(45, 90, 61, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+            color: var(--gold) !important;
+        }
+
+        .navbar-brand i {
+            color: var(--gold);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .navbar-nav .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-weight: 500;
+            padding: 0.8rem 1.2rem !important;
+            margin: 0 0.3rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navbar-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .navbar-nav .nav-link:hover::before {
+            left: 100%;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: white !important;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .navbar-nav .nav-link i {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Enhanced Dropdown Menu */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(135deg, var(--light-green), var(--accent-green));
+            color: white;
+            transform: translateX(5px);
+        }
+
+        /* Enhanced Notification Badge */
+        .notification-bell {
+            position: relative;
+            display: inline-block;
+        }
+
+        .notification-bell .fa-bell {
+            font-size: 1.3rem;
+            color: var(--gold);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: all 0.3s ease;
+        }
+
+        .notification-bell:hover .fa-bell {
+            transform: rotate(15deg) scale(1.1);
+            color: #ffd700;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(45deg, #ff4757, #ff3742);
+            color: white;
+            border-radius: 50%;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Enhanced Notification Dropdown */
+        .notification-dropdown {
+            min-width: 380px;
+            max-height: 450px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .notification-item {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .notification-item:hover {
+            background: linear-gradient(135deg, var(--cream), #f0f8f0);
+            border-left-color: var(--accent-green);
+            transform: translateX(5px);
+        }
+
+        .notification-item.unread {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left-color: var(--gold);
+        }
+
+        /* Enhanced Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #1a3d2e 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gold), var(--light-green), var(--gold));
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .footer-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .footer-links a:hover::after {
+            width: 100%;
+        }
+
+        .footer-links a:hover {
+            color: var(--gold);
+            transform: translateY(-2px);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-social a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .footer-social a:hover {
+            background: var(--gold);
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        /* Enhanced Alert Messages */
+        .alert {
+            border: none;
+            border-radius: 15px;
+            padding: 1.2rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #cce7ff, #b8daff);
+            border-left: 4px solid #007bff;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-left: 4px solid var(--gold);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Main Content Spacing */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            margin-top: 90px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar-nav .nav-link {
+                padding: 0.6rem 1rem !important;
+                margin: 0.2rem 0;
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .footer-social {
+                justify-content: center;
+            }
+        }
+    </style>
     
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+    <!-- Enhanced Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'crops:home' %}">
+            <a class="navbar-brand" href="{% url 'crops:home' %}">
                 <i class="fas fa-leaf me-2"></i>FloraSight
             </a>
-            
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:about' %}">About</a>
-                    </li>
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:dashboard' %}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:upload_image' %}">Upload Image</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:diagnosis_history' %}">My Diagnoses</a>
-                    </li>
-                    {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:admin_panel' %}">Admin Panel</a>
-                    </li>
-                    {% endif %}
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'crops:admin_panel' %}">
+                                    <i class="fas fa-cogs"></i>Admin Panel
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'crops:home' %}">
+                                    <i class="fas fa-home"></i>Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'crops:upload_image' %}">
+                                    <i class="fas fa-camera"></i>Upload Image
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'crops:diagnosis_history' %}">
+                                    <i class="fas fa-history"></i>My Diagnoses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'crops:send_message_to_admin' %}">
+                                    <i class="fas fa-envelope"></i>Contact Admin
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crops:home' %}">
+                                <i class="fas fa-home"></i>Home
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
-                
-                <ul class="navbar-nav">
+
+                <ul class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'crops:profile' %}">
-                                <i class="fas fa-user-edit me-2"></i>Profile
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </a></li>
-                        </ul>
-                    </li>
+                        <!-- Enhanced Notifications -->
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link notification-bell" href="#" data-bs-toggle="dropdown">
+                                <i class="fas fa-bell"></i>
+                                {% if unread_count > 0 %}
+                                <span class="notification-badge">{{ unread_count }}</span>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end notification-dropdown p-0">
+                                <li class="dropdown-header bg-gradient text-white py-3 px-4 border-bottom d-flex justify-content-between align-items-center"
+                                    style="background: linear-gradient(135deg, var(--accent-green), var(--primary-green));">
+                                    <strong><i class="fas fa-bell me-2"></i>Notifications</strong>
+                                    {% if unread_count > 0 %}
+                                    <span class="badge" style="background: var(--gold); color: var(--primary-green);">{{ unread_count }} new</span>
+                                    {% endif %}
+                                </li>
+
+                                {% if user_messages %}
+                                    {% for message in user_messages %}
+                                    <li class="notification-item {% if not message.is_read %}unread{% endif %}">
+                                        <a class="dropdown-item py-3 px-4 border-bottom" href="#" data-message-id="{{ message.id }}">
+                                            <div class="d-flex">
+                                                <div class="flex-shrink-0 me-3">
+                                                    <i class="fas 
+                                                        {% if 'disease' in message.title|lower %}fa-leaf
+                                                        {% elif 'season' in message.title|lower %}fa-cloud-rain
+                                                        {% elif 'server' in message.title|lower %}fa-server
+                                                        {% else %}fa-info-circle{% endif %}
+                                                        text-{{ message.message_type|default:'success' }} fa-lg mt-1"></i>
+                                                </div>
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between">
+                                                        <h6 class="mb-1 fw-bold text-truncate" style="max-width: 200px;">
+                                                            {{ message.title }}
+                                                        </h6>
+                                                        <small class="text-muted">{{ message.created_at|timesince }} ago</small>
+                                                    </div>
+                                                    <p class="mb-0 text-muted">{{ message.message|truncatechars:60 }}</p>
+                                                    {% if not message.user %}
+                                                    <span class="badge mt-1" style="background: var(--light-green); color: var(--primary-green);">Broadcast</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                    {% endfor %}
+                                    <li class="text-center py-3" style="background: linear-gradient(135deg, var(--cream), #f0f8f0);">
+                                        <a href="{% url 'crops:all_messages' %}" class="text-decoration-none fw-bold" style="color: var(--accent-green);">
+                                            <i class="fas fa-eye me-2"></i>View all messages 
+                                            <i class="fas fa-arrow-right ms-1"></i>
+                                        </a>
+                                    </li>
+                                {% else %}
+                                    <li class="text-center py-5">
+                                        <i class="far fa-bell-slash fa-3x text-muted mb-3"></i>
+                                        <p class="text-muted mb-0">No new notifications</p>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </li>
+
+                        <!-- Enhanced Profile Dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-2"></i>{{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'crops:profile' %}">
+                                        <i class="fas fa-user-edit me-2"></i>Profile
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'logout' %}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'crops:register' %}">Register</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crops:register' %}">
+                                <i class="fas fa-user-plus me-2"></i>Register
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <!-- Enhanced Flash Messages -->
     <main class="main-content">
         {% if messages %}
         <div class="container mt-3">
             {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                {{ message }}
+                <i class="fas fa-check-circle me-2"></i>{{ message }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             {% endfor %}
         </div>
         {% endif %}
 
+        <!-- Main content block -->
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
+   <!-- Enhanced Footer -->
+<footer class="footer py-5 mt-5" style="background-color: #2e7d32;">
+    <div class="container footer-content text-white">
+        <div class="row">
+            <!-- Column 1: Branding -->
+            <div class="col-lg-4 mb-4">
+                <div class="footer-brand mb-2 fw-bold fs-4">
+                    <i class="fas fa-leaf me-2 text-white"></i>FloraSight
+                </div>
+                <p class="footer-description">
+                    Revolutionizing agriculture through AI-powered crop disease detection. 
+                    Empowering farmers with cutting-edge technology for healthier crops and sustainable farming.
+                </p>
+            </div>
+
+            <!-- Column 2: Services -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h6 class="fw-bold mb-3">Our Services</h6>
+                <div class="footer-links d-flex flex-column gap-2">
+                    <a href="#" class="text-white"><i class="fas fa-microscope me-2 text-white"></i>AI Disease Detection</a>
+                    <a href="#" class="text-white"><i class="fas fa-leaf me-2 text-white"></i>Crop Monitoring</a>
+                    <a href="#" class="text-white"><i class="fas fa-user-md me-2 text-white"></i>Expert Consultation</a>
+                    <a href="#" class="text-white"><i class="fas fa-cloud-sun me-2 text-white"></i>Weather Integration</a>
+                    <a href="#" class="text-white"><i class="fas fa-pills me-2 text-white"></i>Treatment Recommendations</a>
+                </div>
+            </div>
+
+            <!-- Column 3: Contact -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h6 class="fw-bold mb-3">Contact Us</h6>
+                <p class="mb-2">
+                    <i class="fas fa-map-marker-alt me-2 text-white"></i>Kampala, Uganda
+                </p>
+                <p class="mb-2">
+                    <i class="fas fa-envelope me-2 text-white"></i>support@florasight.ai
+                </p>
+                <p>
+                    <i class="fas fa-phone me-2 text-white"></i>+256 700 123456
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="footer-bottom pt-4 border-top border-light mt-4">
+            <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h5><i class="fas fa-leaf me-2"></i>FloraSight</h5>
-                    <p class="mb-0">AI-powered crop disease detection for modern agriculture.</p>
+                    <p class="mb-0 small">
+                        &copy; 2025 FloraSight. All rights reserved.
+                    </p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p class="mb-0">&copy; 2025 FloraSight. All rights reserved.</p>
+                    <p class="mb-0 small">
+                        Made with <i class="fas fa-heart text-danger"></i> for sustainable agriculture
+                    </p>
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
+</footer>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>
-    
     {% block extra_js %}{% endblock %}
 </body>
 </html>

@@ -3,14 +3,264 @@
 {% block title %}Diagnosis Management - FloraSight Admin{% endblock %}
 {% block page_title %}Diagnosis Management{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Agricultural theme matching dashboard and base_admin */
+    :root {
+        --dark-green: #1B5E20; /* Deep forest green */
+        --medium-green: #2E7D32; /* Rich green */
+        --light-green: #4CAF50; /* Lighter green */
+        --accent-green: #689F38; /* Agricultural accent */
+        --background-white: #ffffff; /* White background */
+        --text-black: #000000; /* Black text for contrast */
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Chart Container (used for search and table) */
+    .chart-container {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-3px);
+    }
+
+    .chart-container h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* Search Form */
+    .form-control, .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        color: var(--text-black);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--medium-green);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        outline: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
+    }
+
+    /* Table Styling */
+    .table {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        color: var(--text-black);
+    }
+
+    .table thead th {
+        background: var(--background-white);
+        border-bottom: 2px solid #e0e0e0;
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 1rem;
+    }
+
+    .table tbody tr {
+        transition: background 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(46, 125, 50, 0.05);
+    }
+
+    .table tbody td {
+        vertical-align: middle;
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .diagnosis-thumb {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .fw-medium {
+        font-weight: 500;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+        font-size: 0.85rem;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-weight: 500;
+        font-size: 0.85rem;
+    }
+
+    .badge.bg-primary {
+        background: var(--accent-green) !important;
+    }
+
+    .badge.bg-danger {
+        background: #d15a3f !important;
+    }
+
+    .badge.bg-success {
+        background: var(--light-green) !important;
+    }
+
+    .badge.bg-warning {
+        background: #e09b3d !important;
+    }
+
+    .progress {
+        height: 20px;
+        border-radius: 6px;
+        background: #e0e0e0;
+    }
+
+    .progress-bar.bg-success {
+        background: var(--medium-green) !important;
+    }
+
+    /* Action Buttons */
+    .btn-group .btn {
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-primary {
+        border-color: var(--accent-green);
+        color: var(--accent-green);
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--accent-green);
+        color: white;
+    }
+
+    .btn-outline-secondary {
+        border-color: #e0e0e0;
+        color: var(--text-black);
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--light-green);
+        color: white;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        color: var(--text-black);
+        font-weight: 500;
+        margin: 0 0.25rem;
+        transition: all 0.3s ease;
+    }
+
+    .pagination .page-link:hover {
+        background: var(--light-green);
+        color: white;
+        border-color: var(--light-green);
+    }
+
+    .pagination .page-item.active .page-link {
+        background: var(--medium-green);
+        border-color: var(--medium-green);
+        color: white;
+    }
+
+    /* Empty State */
+    .empty-state {
+        padding: 3rem;
+        background: var(--background-white);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .empty-state h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.2rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .chart-container {
+            padding: 1.5rem;
+        }
+
+        .chart-container h5 {
+            font-size: 1.1rem;
+        }
+
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .btn-primary {
+            padding: 0.6rem 1rem;
+        }
+
+        .diagnosis-thumb {
+            width: 50px;
+            height: 50px;
+        }
+
+        .table thead th, .table tbody td {
+            font-size: 0.85rem;
+            padding: 0.75rem;
+        }
+
+        .progress {
+            height: 16px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- Search and Filter -->
-<div class="row mb-4">
+<div class="row mb-4" data-aos="fade-up">
     <div class="col-12">
         <div class="chart-container">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">
-                    <i class="fas fa-microscope me-2"></i>Diagnoses ({{ page_obj.paginator.count }})
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/beaker.svg" class="me-2" style="width: 24px; height: 24px;" alt="Diagnoses Icon"> Diagnoses ({{ page_obj.paginator.count }})
                 </h5>
             </div>
             
@@ -20,7 +270,7 @@
                            value="{{ search_query }}" placeholder="Search diagnoses...">
                 </div>
                 <div class="col-md-4">
-                    <select class="form-control" name="status">
+                    <select class="form-select" name="status">
                         <option value="">All Status</option>
                         <option value="processing" {% if status_filter == 'processing' %}selected{% endif %}>Processing</option>
                         <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
@@ -29,7 +279,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="fas fa-search"></i> Filter
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/magnifying-glass.svg" class="me-2" style="width: 20px; height: 20px;" alt="Search Icon"> Filter
                     </button>
                 </div>
             </form>
@@ -38,7 +288,7 @@
 </div>
 
 <!-- Diagnoses Table -->
-<div class="row">
+<div class="row" data-aos="fade-up" data-aos-delay="100">
     <div class="col-12">
         <div class="chart-container">
             {% if page_obj %}
@@ -105,11 +355,11 @@
                                 <div class="btn-group btn-group-sm">
                                     <a href="{% url 'crops:diagnosis_detail' diagnosis.id %}" 
                                        class="btn btn-outline-primary" title="View Details" target="_blank">
-                                        <i class="fas fa-eye"></i>
+                                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/eye.svg" style="width: 16px; height: 16px;" alt="View Icon">
                                     </a>
                                     <a href="/admin/crops/diagnosis/{{ diagnosis.id }}/change/" 
                                        class="btn btn-outline-secondary" title="Edit" target="_blank">
-                                        <i class="fas fa-edit"></i>
+                                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/pencil.svg" style="width: 16px; height: 16px;" alt="Edit Icon">
                                     </a>
                                 </div>
                             </td>
@@ -150,8 +400,8 @@
             </nav>
             {% endif %}
             {% else %}
-            <div class="text-center py-5">
-                <i class="fas fa-microscope fa-3x text-muted mb-3"></i>
+            <div class="text-center py-5 empty-state">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/beaker.svg" class="mb-3" style="width: 48px; height: 48px;" alt="No Diagnoses Icon">
                 <h5 class="text-muted">No diagnoses found</h5>
                 <p class="text-muted">Try adjusting your search criteria.</p>
             </div>

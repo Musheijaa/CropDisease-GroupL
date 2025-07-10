@@ -12,40 +12,83 @@ from django.core.paginator import Paginator
 from django.db.models import Count, Q, Avg
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.contrib.auth.views import LoginView
 from .models import Diagnosis, UserProfile, CropType, Disease, Recommendation, IoTReading, SystemMessage, SystemSettings
 from .forms import DiagnosisForm, UserProfileForm
 import json
 
 def home(request):
-    """Landing page with hero section and key features"""
-    context = {
-        'total_diagnoses': Diagnosis.objects.filter(status='completed').count(),
-        'total_users': UserProfile.objects.count(),
-        'crop_types': CropType.objects.count(),
-    }
-    return render(request, 'crops/home.html', context)
+    features = [
+        {'icon': 'brain', 'title': 'Advanced AI Detection', 'desc': 'Our AI model analyzes crop images with 99% accuracy...'},
+        {'icon': 'camera', 'title': 'Simple Image Upload', 'desc': 'Simply take a photo of your crop and upload it...'},
+        {'icon': 'prescription-bottle-alt', 'title': 'Treatment Recommendations', 'desc': 'Receive personalized treatment plans...'},
+        {'icon': 'chart-line', 'title': 'Analytics & Insights', 'desc': 'Track disease patterns, monitor crop health trends...'},
+        {'icon': 'wifi', 'title': 'IoT Integration', 'desc': 'Connect environmental sensors to monitor soil conditions...'},
+        {'icon': 'history', 'title': 'Historical Records', 'desc': 'Maintain comprehensive records of all diagnoses...'},
+        {'icon': 'mobile-alt', 'title': 'Mobile Friendly', 'desc': 'Access FloraSight from anywhere...'}
+    ]
 
-def about(request):
-    """About page with system information"""
-    return render(request, 'crops/about.html')
+    # Add other context variables as needed
+    if request.user.is_authenticated and request.user.is_staff:
+        messages.info(request, "Admins are redirected to the Admin Panel.")
+        return redirect('crops:admin_panel')
+    return render(request, 'crops/home.html')
+
 
 def register(request):
-    """User registration with profile creation"""
+    """Progressive user registration with comprehensive profile creation"""
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            UserProfile.objects.create(user=user)
-            login(request, user)
-            messages.success(request, 'Registration successful! Welcome to FloraSight.')
-            return redirect('crops:dashboard')
+        # Handle step-by-step registration
+        step = request.POST.get('step', '1')
+        
+        if step == '1':
+            # Basic account information
+            form = UserCreationForm(request.POST)
+            if form.is_valid():
+                # Store form data in session for step 2
+                request.session['registration_data'] = {
+                    'username': form.cleaned_data['username'],
+                    'password1': form.cleaned_data['password1'],
+                    'password2': form.cleaned_data['password2'],
+                }
+                return render(request, 'registration/register_step2.html')
+        
+        elif step == '2':
+            # Profile and farm information
+            reg_data = request.session.get('registration_data')
+            if reg_data:
+                # Create user account
+                user = User.objects.create_user(
+                    username=reg_data['username'],
+                    password=reg_data['password1']
+                )
+                
+                # Create profile with additional information
+                UserProfile.objects.create(
+                    user=user,
+                    user_type=request.POST.get('user_type', 'farmer'),
+                    location=request.POST.get('location', ''),
+                    farm_size=request.POST.get('farm_size') or None,
+                    phone_number=request.POST.get('phone_number', ''),
+                    primary_crops=request.POST.get('primary_crops', ''),
+                )
+                
+                # Clear session data
+                del request.session['registration_data']
+                
+                login(request, user)
+                messages.success(request, 'Registration successful! Welcome to FloraSight.')
+                return redirect('crops:upload_image')
     else:
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
 @login_required
-def dashboard(request):
-    """Main dashboard with user statistics and recent diagnoses"""
+def my_diagnoses(request):
+    """User's diagnosis overview - replaces dashboard for regular users"""
+    if request.user.is_staff:
+        return redirect('crops:admin_panel')
+    
     user_diagnoses = Diagnosis.objects.filter(user=request.user)
     recent_diagnoses = user_diagnoses.order_by('-created_at')[:5]
     
@@ -54,24 +97,41 @@ def dashboard(request):
     completed_diagnoses = user_diagnoses.filter(status='completed').count()
     processing_diagnoses = user_diagnoses.filter(status='processing').count()
     
-    # Disease distribution
-    disease_stats = user_diagnoses.filter(
-        predicted_disease__isnull=False
-    ).values(
-        'predicted_disease__name'
-    ).annotate(
-        count=Count('id')
-    ).order_by('-count')[:5]
+    # Recent system messages for this user
+    user_messages = SystemMessage.objects.filter(
+        Q(user=request.user) | Q(user__isnull=True)
+    ).order_by('-created_at')[:5]
     
     context = {
         'recent_diagnoses': recent_diagnoses,
         'total_diagnoses': total_diagnoses,
         'completed_diagnoses': completed_diagnoses,
         'processing_diagnoses': processing_diagnoses,
-        'disease_stats': disease_stats,
+        'user_messages': user_messages,
     }
-    return render(request, 'crops/dashboard.html', context)
+    return render(request, 'crops/my_diagnoses.html', context)
 
+@login_required
+def send_message_to_admin(request):
+    """Allow users to send messages to admin"""
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        message_type = request.POST.get('message_type', 'info')
+        
+        # Create message for admin (staff users will see it)
+        SystemMessage.objects.create(
+            title=f"From {request.user.username}: {title}",
+            message=message,
+            message_type=message_type,
+            user=None,  # Admin message
+            created_by=request.user
+        )
+        
+        messages.success(request, 'Your message has been sent to the administrators.')
+        return redirect('crops:my_diagnoses')
+    
+    return render(request, 'crops/send_message.html')
 @login_required
 def upload_image(request):
     """Image upload form for crop diagnosis"""
@@ -145,11 +205,7 @@ def diagnosis_history(request):
 def profile(request):
     """User profile management"""
     profile, created = UserProfile.objects.get_or_create(user=request.user)
-
-    # ✅ Add these two lines:
-    total_diagnoses = request.user.diagnosis_set.count()
-    completed_diagnoses = request.user.diagnosis_set.filter(status='completed').count()
-
+    
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=profile)
         if form.is_valid():
@@ -158,12 +214,10 @@ def profile(request):
             return redirect('crops:profile')
     else:
         form = UserProfileForm(instance=profile)
-
+    
     context = {
         'form': form,
         'profile': profile,
-        'total_diagnoses': total_diagnoses,        
-        'completed_diagnoses': completed_diagnoses 
     }
     return render(request, 'crops/profile.html', context)
 
@@ -171,18 +225,19 @@ def profile(request):
 
 @staff_member_required
 def admin_panel(request):
-    """Admin dashboard with system overview"""
+    """Enhanced admin dashboard with comprehensive system overview and analytics"""
     # Get statistics
     total_users = User.objects.count()
     active_users = User.objects.filter(last_login__gte=timezone.now() - timedelta(days=30)).count()
     total_diagnoses = Diagnosis.objects.count()
     completed_diagnoses = Diagnosis.objects.filter(status='completed').count()
     disease_types = Disease.objects.count()
+    pending_messages = SystemMessage.objects.filter(user__isnull=True, is_read=False).count()
     
     # Recent activity
     recent_users = User.objects.order_by('-date_joined')[:5]
     recent_diagnoses = Diagnosis.objects.order_by('-created_at')[:5]
-    recent_messages = SystemMessage.objects.order_by('-created_at')[:5]
+    recent_user_messages = SystemMessage.objects.filter(user__isnull=True).order_by('-created_at')[:5]
     
     # User growth data (last 6 months)
     user_growth_data = []
@@ -208,20 +263,81 @@ def admin_panel(request):
         count=Count('id')
     ).order_by('-count')[:5]
     
+    # Monthly diagnosis trends
+    monthly_diagnoses = []
+    for i in range(12):
+        date = timezone.now() - timedelta(days=30*i)
+        count = Diagnosis.objects.filter(
+            created_at__year=date.year,
+            created_at__month=date.month
+        ).count()
+        monthly_diagnoses.append({
+            'month': date.strftime('%b %Y'),
+            'count': count
+        })
+    monthly_diagnoses.reverse()
+    
+    # User type distribution
+    user_type_stats = UserProfile.objects.values('user_type').annotate(
+        count=Count('id')
+    ).order_by('-count')
+    
+    # Average confidence score
+    avg_confidence = Diagnosis.objects.filter(confidence_score__isnull=False).aggregate(
+        avg_confidence=Avg('confidence_score')
+    )['avg_confidence'] or 0
+    
     context = {
         'total_users': total_users,
         'active_users': active_users,
         'total_diagnoses': total_diagnoses,
         'completed_diagnoses': completed_diagnoses,
         'disease_types': disease_types,
+        'pending_messages': pending_messages,
         'recent_users': recent_users,
         'recent_diagnoses': recent_diagnoses,
-        'recent_messages': recent_messages,
+        'recent_user_messages': recent_user_messages,
         'user_growth_data': user_growth_data,
         'disease_stats': disease_stats,
+        'monthly_diagnoses': monthly_diagnoses,
+        'user_type_stats': user_type_stats,
+        'avg_confidence': round(avg_confidence, 1),
     }
     return render(request, 'crops/admin/dashboard.html', context)
 
+@staff_member_required
+def admin_send_broadcast(request):
+    """Allow admin to send broadcast messages to all users"""
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        message = request.POST.get('message')
+        message_type = request.POST.get('message_type', 'info')
+        target_audience = request.POST.get('target_audience', 'all')
+        
+        # Create broadcast message
+        if target_audience == 'all':
+            # Send to all users (user=None means broadcast)
+            SystemMessage.objects.create(
+                title=title,
+                message=message,
+                message_type=message_type,
+                user=None
+            )
+        else:
+            # Send to specific user type
+            users = User.objects.filter(userprofile__user_type=target_audience)
+            for user in users:
+                SystemMessage.objects.create(
+                    title=title,
+                    message=message,
+                    message_type=message_type,
+                    user=user
+                )
+        
+        messages.success(request, f'Broadcast message sent successfully to {target_audience}!')
+        return redirect('crops:admin_panel')
+    
+    return render(request, 'crops/admin/send_broadcast.html')
 @staff_member_required
 def admin_users(request):
     """Admin user management"""
@@ -283,14 +399,10 @@ def admin_edit_user(request, user_id):
     """Edit user"""
     user = get_object_or_404(User, id=user_id)
     profile, created = UserProfile.objects.get_or_create(user=user)
-
-    # ✅ Compute total and completed diagnosis counts
-    total_diagnoses = user.diagnosis_set.count()
-    completed_diagnoses = user.diagnosis_set.filter(status='completed').count()
-
+    
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, instance=profile)
-
+        
         # Update basic user info
         user.first_name = request.POST.get('first_name', '')
         user.last_name = request.POST.get('last_name', '')
@@ -298,19 +410,17 @@ def admin_edit_user(request, user_id):
         user.is_active = request.POST.get('is_active') == 'on'
         user.is_staff = request.POST.get('is_staff') == 'on'
         user.save()
-
+        
         if profile_form.is_valid():
             profile_form.save()
             messages.success(request, f'User {user.username} updated successfully!')
             return redirect('crops:admin_users')
     else:
         profile_form = UserProfileForm(instance=profile)
-
+    
     context = {
         'user_obj': user,
         'profile_form': profile_form,
-        'total_diagnoses': total_diagnoses,
-        'completed_diagnoses': completed_diagnoses,
     }
     return render(request, 'crops/admin/edit_user.html', context)
 
@@ -380,6 +490,26 @@ def admin_diagnoses(request):
     return render(request, 'crops/admin/diagnoses.html', context)
 
 @staff_member_required
+def admin_messages(request):
+    """Admin system messages management"""
+    messages_list = SystemMessage.objects.order_by('-created_at')
+    
+    # Filter by type
+    message_type = request.GET.get('type')
+    if message_type:
+        messages_list = messages_list.filter(message_type=message_type)
+    
+    paginator = Paginator(messages_list, 20)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'message_type': message_type,
+    }
+    return render(request, 'crops/admin/messages.html', context)
+
+@staff_member_required
 def admin_analytics(request):
     """Admin analytics dashboard"""
     # User analytics
@@ -428,55 +558,6 @@ def admin_analytics(request):
         'monthly_diagnoses': monthly_diagnoses,
     }
     return render(request, 'crops/admin/analytics.html', context)
-
-@staff_member_required
-def admin_messages(request):
-    """Admin system messages"""
-    messages_list = SystemMessage.objects.order_by('-created_at')
-    
-    # Filter by type
-    message_type = request.GET.get('type')
-    if message_type:
-        messages_list = messages_list.filter(message_type=message_type)
-    
-    paginator = Paginator(messages_list, 20)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    context = {
-        'page_obj': page_obj,
-        'message_type': message_type,
-    }
-    return render(request, 'crops/admin/messages.html', context)
-
-@staff_member_required
-def admin_settings(request):
-    """Admin system settings"""
-    settings_list = SystemSettings.objects.order_by('key')
-    
-    if request.method == 'POST':
-        key = request.POST.get('key')
-        value = request.POST.get('value')
-        description = request.POST.get('description', '')
-        
-        setting, created = SystemSettings.objects.get_or_create(
-            key=key,
-            defaults={'value': value, 'description': description, 'updated_by': request.user}
-        )
-        
-        if not created:
-            setting.value = value
-            setting.description = description
-            setting.updated_by = request.user
-            setting.save()
-        
-        messages.success(request, f'Setting {key} updated successfully!')
-        return redirect('crops:admin_settings')
-    
-    context = {
-        'settings_list': settings_list,
-    }
-    return render(request, 'crops/admin/settings.html', context)
 
 # API Endpoints for ML Integration
 
@@ -530,3 +611,33 @@ def iot_data_api(request):
     
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
+class CustomLoginView(LoginView):
+    def get_success_url(self):
+        if self.request.user.is_staff:
+            return '/admin-panel/'
+        return '/'
+    
+@login_required
+def mark_message_read(request, message_id):
+    message = get_object_or_404(SystemMessage, id=message_id, user=request.user)
+    message.is_read = True
+    message.save()
+    return JsonResponse({'status': 'success'})
+@login_required
+def all_messages(request):
+    messages = SystemMessage.objects.filter(
+        Q(user=request.user) | Q(user__isnull=True)
+    ).order_by('-created_at')
+    
+    # Mark all as read when viewing full list
+    messages.filter(is_read=False).update(is_read=True)
+    
+    paginator = Paginator(messages, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'crops/all_messages.html', {
+        'page_obj': page_obj,
+        'unread_count': 0  # Since we just marked all as read
+    })

@@ -1,207 +1,450 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works - FloraSight</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --green-medium: #4CAF50;
+            --green-light: #A5D6A7;
+            --brown-soil: #8D6E63;
+            --sunlight-yellow: #FFEB3B;
+            --sky-blue: #4FC3F7;
+            --plant-red: #E57373;
 
-{% block title %}Upload Image - FloraSight{% endblock %}
+            --text-dark: #333;
+            --text-muted: #666;
+            --bg-light: #ffffff;
+            --bg-section: #f8f9fa;
+            --border-light: #e0e0e0;
+        }
 
-{% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">
-                        <i class="fas fa-camera me-2"></i>Upload Crop Image for Diagnosis
-                    </h4>
+        body {
+            background: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Section badge */
+        .section-badge .badge {
+            background: var(--green-light);
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+        }
+
+        /* Title and subtitle */
+        .display-5 {
+            color: var(--green-medium);
+            font-weight: 700;
+        }
+
+        .lead {
+            color: var(--text-muted);
+        }
+
+        /* Step icons */
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .step-icon.capture {
+            background-color: var(--sky-blue);
+        }
+
+        .step-icon.upload {
+            background-color: var(--green-medium);
+        }
+
+        .step-icon.analyze {
+            background-color: var(--sunlight-yellow);
+            color: #333;
+        }
+
+        .step-icon.results {
+            background-color: var(--plant-red);
+        }
+
+        /* Hover effect on step icons */
+        .step-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Step content */
+        .step-card h5 {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Upload card */
+        .upload-card {
+            background: var(--bg-section);
+            border: 1px solid var(--border-light);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            transition: 0.3s ease;
+        }
+
+        .upload-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Card header */
+        .card-header {
+            background: var(--green-medium);
+            color: white;
+            border-radius: 1rem 1rem 0 0;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .card-header h4 {
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--green-medium);
+            padding: 2.5rem;
+            background: #f9fbe7;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s ease;
+        }
+
+        .upload-area:hover {
+            background: #f1f8e9;
+            transform: scale(1.01);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: var(--green-medium);
+        }
+
+        /* Image Preview */
+        .image-preview img {
+            width: 100%;
+            border-radius: 12px;
+            max-height: 300px;
+            object-fit: cover;
+            margin-top: 1rem;
+        }
+
+        /* Input styling */
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            padding: 0.75rem;
+        }
+
+        /* Success Button */
+        .btn-success {
+            background-color: var(--green-medium);
+            border: none;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #388e3c;
+            box-shadow: 0 4px 12px rgba(0, 128, 0, 0.2);
+        }
+
+        /* Arrows between steps */
+        .step-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .step-arrow i {
+            font-size: 2rem;
+            color: var(--green-medium);
+            animation: arrow-bounce 1.5s ease-in-out infinite;
+        }
+
+        @keyframes arrow-bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        /* Spinner styles */
+.spinner {
+    display: none;
+    border: 4px solid var(--green-light);
+    border-top: 4px solid var(--green-medium);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+    </style>
+</head>
+<body>
+    <section id="how-it-works" class="py-5 min-vh-100 d-flex align-items-center">
+        <div class="container">
+            <div class="text-center mb-5">
+                <div class="section-badge mb-3">
+                    <span class="badge px-4 py-2 rounded-pill">
+                        <i class="fas fa-cogs me-2"></i>How It Works
+                    </span>
                 </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" id="uploadForm">
-                        {% csrf_token %}
-                        
-                        <!-- Image Upload Section -->
-                        <div class="mb-4">
-                            <label for="{{ form.crop_image.id_for_label }}" class="form-label fw-bold">
-                                Crop Image <span class="text-danger">*</span>
-                            </label>
-                            <div class="upload-area" id="uploadArea">
-                                <div class="upload-content">
-                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                    <h5>Drag & Drop your image here</h5>
-                                    <p class="text-muted">or click to browse</p>
-                                    {{ form.crop_image }}
-                                </div>
-                                <div class="image-preview" id="imagePreview" style="display: none;">
-                                    <img id="previewImg" src="" alt="Preview" class="img-fluid rounded">
-                                    <button type="button" class="btn btn-sm btn-danger remove-image" id="removeImage">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <small class="form-text text-muted">
-                                Supported formats: JPG, PNG, GIF. Max size: 10MB
-                            </small>
-                        </div>
-
-                        <div class="row">
-                            <!-- Crop Type -->
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.crop_type.id_for_label }}" class="form-label fw-bold">
-                                    Crop Type
-                                </label>
-                                {{ form.crop_type }}
-                                <small class="form-text text-muted">
-                                    Select the type of crop in the image
-                                </small>
-                            </div>
-
-                            <!-- Environmental Data -->
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.temperature.id_for_label }}" class="form-label fw-bold">
-                                    Temperature (°C)
-                                </label>
-                                {{ form.temperature }}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.humidity.id_for_label }}" class="form-label fw-bold">
-                                    Humidity (%)
-                                </label>
-                                {{ form.humidity }}
-                            </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.soil_ph.id_for_label }}" class="form-label fw-bold">
-                                    Soil pH
-                                </label>
-                                {{ form.soil_ph }}
-                            </div>
-                        </div>
-
-                        <!-- Notes -->
-                        <div class="mb-4">
-                            <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">
-                                Additional Notes
-                            </label>
-                            {{ form.notes }}
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success btn-lg" id="submitBtn">
-                                <i class="fas fa-microscope me-2"></i>Analyze Image
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                <h2 class="display-5 fw-bold mb-3">Simple Steps to Healthier Crops</h2>
+                <p class="lead">Our AI makes plant health management accessible to everyone</p>
             </div>
 
-            <!-- Tips Card -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-lightbulb me-2 text-warning"></i>Tips for Better Results
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Use good lighting conditions
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Focus on affected plant parts
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Avoid blurry images
-                                </li>
-                            </ul>
+            <div class="row align-items-center justify-content-between">
+                <!-- Steps on the Left -->
+                <div class="col-lg-4 col-md-12 mb-4">
+                    <div class="steps-container">
+                        <!-- Capture Step -->
+                        <div class="step-card text-center mb-4">
+                            <div class="step-icon capture">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <h5 class="fw-bold">Capture</h5>
+                            <p>Take a photo of your plant or upload an existing image</p>
                         </div>
-                        <div class="col-md-6">
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Include environmental data for better accuracy
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Take multiple angles if possible
-                                </li>
-                                <li class="mb-2">
-                                    <i class="fas fa-check text-success me-2"></i>
-                                    Ensure the plant fills most of the frame
-                                </li>
-                            </ul>
+                        
+                        <!-- Arrow -->
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+
+                        <!-- Upload Step -->
+                        <div class="step-card text-center mb-4">
+                            <div class="step-icon upload">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h5 class="fw-bold">Upload</h5>
+                            <p>Submit your image to our AI analysis system</p>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        
+                        <!-- Analyze Step -->
+                        <div class="step-card text-center mb-4">
+                            <div class="step-icon analyze">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h5 class="fw-bold">Analyze</h5>
+                            <p>Our AI detects diseases and assesses plant health</p>
+                        </div>
+                        
+                        <!-- Arrow -->
+                        <div class="step-arrow">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+
+                        <!-- Results Step -->
+                        <div class="step-card text-center mb-4">
+                            <div class="step-icon results">
+                                <i class="fas fa-file-prescription"></i>
+                            </div>
+                            <h5 class="fw-bold">Results</h5>
+                            <p>Receive diagnosis and treatment recommendations</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Upload Form -->
+                <div class="col-lg-8 col-md-12">
+                    <div class="upload-card shadow-lg">
+                        <div class="card-header text-white">
+                            <h4 class="mb-0">
+                                <i class="fas fa-camera me-2"></i>Upload Crop Image for Diagnosis
+                            </h4>
+                        </div>
+                        <div class="card-body p-5">
+                            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                                {% csrf_token %}
+                                
+                                <!-- Image Upload Section -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold fs-5 mb-3">
+                                        Crop Image <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="upload-area" id="uploadArea">
+                                        <div class="upload-content" id="uploadContent">
+                                            <i class="fas fa-cloud-upload-alt fa-4x mb-3"></i>
+                                            <h4 class="mb-2">Drag & Drop your image here</h4>
+                                            <p class="text-muted fs-5">or click to browse</p>
+                                            <input type="file" id="id_crop_image" name="crop_image" accept="image/*" required>
+                                        </div>
+                                        <div class="image-preview" id="imagePreview" style="display: none;">
+                                            <img id="previewImg" src="" alt="Preview" class="img-fluid">
+                                            <button type="button" class="btn btn-danger remove-image" id="removeImage">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="form-text text-muted mt-2">
+                                        Supported formats: JPG, PNG, GIF. Max size: 10MB
+                                    </small>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Crop Type -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold fs-6">Crop Type</label>
+                                        <select class="form-select" id="id_crop_type" name="crop_type">
+                                            <option value="">Select crop type...</option>
+                                            <option value="corn">Corn</option>
+                                            <option value="wheat">Wheat</option>
+                                            <option value="rice">Rice</option>
+                                            <option value="tomato">Tomato</option>
+                                            <option value="potato">Potato</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                        <small class="form-text text-muted">
+                                            Select the type of crop in the image
+                                        </small>
+                                    </div>
+
+                                    <!-- Temperature -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold fs-6">Temperature (°C)</label>
+                                        <input type="number" class="form-control" id="id_temperature" name="temperature" placeholder="e.g., 25">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold fs-6">Humidity (%)</label>
+                                        <input type="number" class="form-control" id="id_humidity" name="humidity" placeholder="e.g., 65">
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label fw-bold fs-6">Soil pH</label>
+                                        <input type="number" class="form-control" id="id_soil_ph" name="soil_ph" step="0.1" placeholder="e.g., 6.5">
+                                    </div>
+                                </div>
+
+                                <!-- Notes -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold fs-6">Additional Notes</label>
+                                    <textarea class="form-control" id="id_notes" name="notes" rows="4" placeholder="Any additional observations or concerns..."></textarea>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="d-grid">
+  <button type="button" class="btn btn-success btn-lg" id="submitBtn">
+    <i class="fas fa-microscope me-2"></i>Analyze Image
+</button>
+
+<!-- Loading Spinner (hidden initially) -->
+<div id="loadingSpinner" class="spinner" style="display: none;"></div>
+
+<!-- Result Section (hidden initially) -->
+<div id="result" class="mt-4" style="display: none;">
+    <h4>Results:</h4>
+    <p id="resultText">Your results will appear here after analysis.</p>
+</div>
+
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-{% endblock %}
+    </section>
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('id_crop_image');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
-    const removeImage = document.getElementById('removeImage');
-    const uploadContent = uploadArea.querySelector('.upload-content');
-
-    // Handle drag and drop
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        uploadArea.classList.add('drag-over');
-    });
-
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('drag-over');
-    });
-
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        uploadArea.classList.remove('drag-over');
-        
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFileSelect(files[0]);
-        }
-    });
-
-    // Handle file input change
-    fileInput.addEventListener('change', function(e) {
-        if (e.target.files.length > 0) {
-            handleFileSelect(e.target.files[0]);
-        }
-    });
-
-    // Handle remove image
-    removeImage.addEventListener('click', function() {
-        fileInput.value = '';
-        imagePreview.style.display = 'none';
-        uploadContent.style.display = 'block';
-    });
-
-    function handleFileSelect(file) {
-        if (file && file.type.startsWith('image/')) {
+    <!-- Bootstrap JS & FontAwesome JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // JavaScript for previewing the uploaded image
+        document.getElementById("id_crop_image").addEventListener("change", function(e) {
+            const file = e.target.files[0];
             const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImg.src = e.target.result;
-                uploadContent.style.display = 'none';
-                imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    }
+            
+            reader.onload = function() {
+                const preview = document.getElementById("imagePreview");
+                const uploadContent = document.getElementById("uploadContent");
+                preview.style.display = "block";
+                uploadContent.style.display = "none"; // Hide the drag-and-drop area
+                const img = document.getElementById("previewImg");
+                img.src = reader.result;
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Remove image preview
+        document.getElementById("removeImage").addEventListener("click", function() {
+            const preview = document.getElementById("imagePreview");
+            const uploadContent = document.getElementById("uploadContent");
+            preview.style.display = "none";
+            uploadContent.style.display = "block"; // Show the drag-and-drop area again
+            document.getElementById("id_crop_image").value = ''; // Clear the file input
+        });
+        // Handle the "Analyze" button click
+document.getElementById("submitBtn").addEventListener("click", function() {
+    // Show loading spinner and disable the button
+    const spinner = document.getElementById("loadingSpinner");
+    const button = document.getElementById("submitBtn");
+    spinner.style.display = "block"; // Show spinner
+    button.disabled = true; // Disable button
+
+    // Simulate processing time (e.g., 3 seconds)
+    setTimeout(function() {
+        // Hide spinner and show results
+        spinner.style.display = "none"; // Hide spinner
+        document.getElementById("result").style.display = "block"; // Show results
+        document.getElementById("resultText").innerText = "Your plant has been diagnosed with [DISEASE NAME]. Treatment options: [TREATMENT].";
+
+        // Re-enable the button (optional, if you want to allow retrying)
+        button.disabled = false;
+    }, 3000); // 3 seconds delay to simulate processing
 });
-</script>
-{% endblock %}
+
+
+    </script>
+</body>
+</html>
