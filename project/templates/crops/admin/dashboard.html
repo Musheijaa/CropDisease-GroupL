@@ -1,606 +1,480 @@
 {% extends 'crops/admin/base_admin.html' %}
 
 {% block title %}Admin Dashboard - FloraSight{% endblock %}
-{% block page_title %}Agricultural Insights Overview{% endblock %}
-
-{% block content %}
-<!-- Hero Stats Section -->
-<div class="admin-hero-stats mb-5">
-    <div class="row g-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-admin stat-primary">
-                <div class="stat-icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number">{{ total_users|default:"0" }}</div>
-                    <div class="stat-label">Total Users</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 12% from last month
-                    </div>
-                </div>
-                <div class="stat-decoration leaf-1"></div>
-                <div class="stat-decoration leaf-2"></div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-admin stat-success">
-                <div class="stat-icon">
-                    <i class="fas fa-user-check"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number">{{ active_users|default:"0" }}</div>
-                    <div class="stat-label">Active Users</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 8% from last month
-                    </div>
-                </div>
-                <div class="stat-decoration leaf-1"></div>
-                <div class="stat-decoration leaf-2"></div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-admin stat-warning">
-                <div class="stat-icon">
-                    <i class="fas fa-bug"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number">{{ disease_types|default:"0" }}</div>
-                    <div class="stat-label">Disease Types</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 2 new this month
-                    </div>
-                </div>
-                <div class="stat-decoration leaf-1"></div>
-                <div class="stat-decoration leaf-2"></div>
-            </div>
-        </div>
-        
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card-admin stat-info">
-                <div class="stat-icon">
-                    <i class="fas fa-microscope"></i>
-                </div>
-                <div class="stat-content">
-                    <div class="stat-number">{{ total_diagnoses|default:"0" }}</div>
-                    <div class="stat-label">Diagnoses</div>
-                    <div class="stat-change positive">
-                        <i class="fas fa-arrow-up"></i> 24% from last month
-                    </div>
-                </div>
-                <div class="stat-decoration leaf-1"></div>
-                <div class="stat-decoration leaf-2"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4">
-    <!-- User Growth Chart -->
-    <div class="col-lg-8">
-        <div class="admin-chart-container">
-            <div class="chart-header">
-                <h5>
-                    <i class="fas fa-seedling me-2"></i>User Growth & Activity
-                </h5>
-                <div class="chart-actions">
-                    <button class="btn btn-sm btn-outline-success">Weekly</button>
-                    <button class="btn btn-sm btn-success">Monthly</button>
-                    <button class="btn btn-sm btn-outline-success">Yearly</button>
-                </div>
-            </div>
-            <div class="chart-body">
-                <canvas id="userGrowthChart" height="100"></canvas>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Recent Activity -->
-    <div class="col-lg-4">
-        <div class="admin-chart-container">
-            <div class="chart-header">
-                <h5>
-                    <i class="fas fa-leaf me-2"></i>Recent Activity
-                </h5>
-            </div>
-            <div class="chart-body">
-                <div class="activity-list">
-                    {% for user in recent_users %}
-                    <div class="activity-item">
-                        <div class="activity-icon bg-success-light">
-                            <i class="fas fa-user-plus text-success"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">New User Registered</div>
-                            <div class="activity-desc">{{ user.username }} joined FloraSight</div>
-                            <div class="activity-time">{{ user.date_joined|timesince }} ago</div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    
-                    {% for diagnosis in recent_diagnoses|slice:":3" %}
-                    <div class="activity-item">
-                        <div class="activity-icon bg-info-light">
-                            <i class="fas fa-microscope text-info"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">Plant Diagnosis</div>
-                            <div class="activity-desc">{{ diagnosis.user.username }} uploaded image</div>
-                            <div class="activity-time">{{ diagnosis.created_at|timesince }} ago</div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row g-4 mt-4">
-    <!-- Disease Distribution -->
-    <div class="col-lg-6">
-        <div class="admin-chart-container">
-            <div class="chart-header">
-                <h5>
-                    <i class="fas fa-chart-pie me-2"></i>Disease Distribution
-                </h5>
-                <div class="chart-actions">
-                    <button class="btn btn-sm btn-outline-warning">View Details</button>
-                </div>
-            </div>
-            <div class="chart-body">
-                <canvas id="diseaseChart" height="150"></canvas>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Recent Messages -->
-    <div class="col-lg-6">
-        <div class="admin-chart-container">
-            <div class="chart-header">
-                <h5>
-                    <i class="fas fa-envelope me-2"></i>Recent Messages
-                </h5>
-                <div class="chart-actions">
-                    <button class="btn btn-sm btn-outline-primary">View All</button>
-                </div>
-            </div>
-            <div class="chart-body">
-                <div class="activity-list">
-                    {% for message in recent_messages %}
-                    <div class="activity-item">
-                        <div class="activity-icon bg-{% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% else %}info{% endif %}-light">
-                            <i class="fas fa-{% if message.message_type == 'error' %}exclamation-triangle{% elif message.message_type == 'warning' %}exclamation-circle{% else %}info-circle{% endif %} text-{% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% else %}info{% endif %}"></i>
-                        </div>
-                        <div class="activity-content">
-                            <div class="activity-title">{{ message.title }}</div>
-                            <div class="activity-desc">{{ message.message|truncatewords:10 }}</div>
-                            <div class="activity-time">{{ message.created_at|timesince }} ago</div>
-                        </div>
-                    </div>
-                    {% empty %}
-                    <div class="empty-state text-center py-4">
-                        <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
-                        <p class="text-muted mb-0">No recent messages</p>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% block page_title %}Dashboard Overview{% endblock %}
 
 {% block extra_css %}
 <style>
+    /* Agricultural theme with dark green palette and white background */
     :root {
-        --agri-primary: #2E7D32;
-        --agri-primary-light: #4CAF50;
-        --agri-secondary: #FFC107;
-        --agri-tertiary: #2196F3;
-        --agri-dark: #1B5E20;
-        --agri-light: #E8F5E9;
-        --agri-success: #4CAF50;
-        --agri-warning: #FFC107;
-        --agri-danger: #F44336;
-        --agri-info: #2196F3;
+        --dark-green: #1B5E20; /* Deep forest green */
+        --medium-green: #2E7D32; /* Rich green */
+        --light-green: #4CAF50; /* Lighter green */
+        --accent-green: #689F38; /* Agricultural accent */
+        --background-white: #ffffff; /* White background */
+        --text-black: #000000; /* Black text for contrast */
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
     }
 
-    /* Admin Stats Cards */
-    .admin-hero-stats {
-        margin-top: 1rem;
+    body {
+        background: var(--background-white);
+        font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text-black);
+        line-height: 1.6;
     }
 
+    /* Enhanced Sidebar */
+    .admin-sidebar {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
+        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .sidebar-brand {
+        background: rgba(0, 0, 0, 0.25);
+        border-bottom: 1px solid var(--glass-border);
+        padding: 1.75rem;
+        text-align: center;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        letter-spacing: 0.5px;
+        transition: background 0.3s ease;
+    }
+
+    .sidebar-brand:hover {
+        background: rgba(0, 0, 0, 0.35);
+    }
+
+    /* Stat Cards with Professional Icons and Glassmorphism */
     .stat-card-admin {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-left: 6px solid var(--medium-green);
         border-radius: 12px;
         padding: 1.5rem;
-        color: white;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
         position: relative;
         overflow: hidden;
-        height: 100%;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        transition: all 0.3s ease;
     }
 
     .stat-card-admin:hover {
         transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
     }
 
-    .stat-primary {
-        background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    .stat-card-admin::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        transition: left 0.5s ease;
     }
 
-    .stat-success {
-        background: linear-gradient(135deg, #8BC34A, #689F38);
+    .stat-card-admin:hover::before {
+        left: 100%;
     }
 
-    .stat-warning {
-        background: linear-gradient(135deg, #FFC107, #FFA000);
-    }
-
-    .stat-info {
-        background: linear-gradient(135deg, #2196F3, #1565C0);
-    }
+    .stat-card-admin.primary { border-left-color: var(--dark-green); }
+    .stat-card-admin.success { border-left-color: var(--medium-green); }
+    .stat-card-admin.warning { border-left-color: #e09b3d; }
+    .stat-card-admin.info { border-left-color: var(--accent-green); }
 
     .stat-icon {
-        font-size: 1.75rem;
-        opacity: 0.8;
+        width: 48px;
+        height: 48px;
         margin-bottom: 1rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
     }
 
     .stat-number {
-        font-size: 2rem;
+        color: var(--dark-green);
+        font-size: 2.8rem;
         font-weight: 700;
-        margin-bottom: 0.25rem;
-    }
-
-    .stat-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
         margin-bottom: 0.5rem;
     }
 
+    .stat-label {
+        color: var(--text-black);
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
     .stat-change {
-        font-size: 0.75rem;
-        opacity: 0.9;
+        color: var(--medium-green);
+        font-size: 0.95rem;
+        font-weight: 500;
     }
 
-    .stat-change.positive {
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .stat-change.negative {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    .stat-decoration {
-        position: absolute;
-        opacity: 0.1;
-    }
-
-    .leaf-1 {
-        top: -20px;
-        right: -20px;
-        width: 80px;
-        height: 80px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z' /%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
-
-    .leaf-2 {
-        bottom: -10px;
-        right: 10px;
-        width: 60px;
-        height: 60px;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22L6.66 19.7C7.14 19.87 7.64 20 8 20C19 20 22 3 22 3C21 5 14 5.25 9 6.25C4 7.25 2 11.5 2 13.5C2 15.5 3.75 17.25 3.75 17.25C7 8 17 8 17 8Z' /%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-size: contain;
-        transform: rotate(30deg);
+    .stat-change.positive i {
+        color: var(--light-green);
+        margin-right: 0.5rem;
     }
 
     /* Chart Containers */
-    .admin-chart-container {
-        background: white;
+    .chart-container {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
         border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        overflow: hidden;
-        height: 100%;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
     }
 
-    .chart-header {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    .chart-container:hover {
+        transform: translateY(-3px);
     }
 
-    .chart-header h5 {
-        font-size: 1.1rem;
+    .chart-container h5 {
+        color: var(--text-black);
         font-weight: 600;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        color: var(--agri-dark);
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.3px;
     }
 
-    .chart-header h5 i {
-        margin-right: 0.75rem;
-        color: var(--agri-primary);
-    }
-
-    .chart-actions .btn {
-        margin-left: 0.5rem;
-    }
-
-    .chart-body {
-        padding: 1.5rem;
-    }
-
-    /* Activity List */
-    .activity-list {
-        display: grid;
-        gap: 1rem;
-    }
-
+    /* Activity Items */
     .activity-item {
-        display: flex;
-        align-items: flex-start;
-        padding: 0.75rem;
-        border-radius: 8px;
-        transition: all 0.2s ease;
+        background: var(--background-white);
+        border-left: 4px solid var(--medium-green);
+        border-radius: 10px;
+        padding: 1.2rem;
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .activity-item:hover {
-        background-color: rgba(0, 0, 0, 0.02);
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
     .activity-icon {
         width: 40px;
         height: 40px;
-        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
+        border-radius: 50%;
         margin-right: 1rem;
-        flex-shrink: 0;
     }
 
-    .bg-success-light {
-        background-color: rgba(76, 175, 80, 0.1);
+    .activity-icon.success { background: var(--light-green); }
+    .activity-icon.info { background: var(--accent-green); }
+    .activity-icon.warning { background: #e09b3d; }
+    .activity-icon.danger { background: #d15a3f; }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
+        border: none;
+        border-radius: 10px;
+        padding: 0.8rem 1.8rem;
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
     }
 
-    .bg-info-light {
-        background-color: rgba(33, 150, 243, 0.1);
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
     }
 
-    .bg-warning-light {
-        background-color: rgba(255, 193, 7, 0.1);
+    /* Typography and Responsive Design */
+    h5, .stat-label, .stat-number, .fw-medium {
+        font-family: 'Inter', 'Segoe UI', sans-serif;
     }
 
-    .bg-danger-light {
-        background-color: rgba(244, 67, 54, 0.1);
-    }
-
-    .activity-content {
-        flex: 1;
-    }
-
-    .activity-title {
-        font-weight: 500;
-        margin-bottom: 0.1rem;
-    }
-
-    .activity-desc {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        margin-bottom: 0.1rem;
-    }
-
-    .activity-time {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-    }
-
-    /* Empty State */
-    .empty-state {
-        padding: 1rem;
-    }
-
-    /* Responsive Adjustments */
     @media (max-width: 768px) {
         .stat-card-admin {
-            padding: 1.25rem;
+            padding: 1.2rem;
         }
-        
         .stat-number {
-            font-size: 1.75rem;
+            font-size: 2.2rem;
         }
-        
-        .chart-header {
-            flex-direction: column;
-            align-items: flex-start;
+        .stat-label {
+            font-size: 1rem;
         }
-        
-        .chart-actions {
-            margin-top: 0.5rem;
-            align-self: flex-end;
+        .chart-container {
+            padding: 1.5rem;
+        }
+        .chart-container h5 {
+            font-size: 1.1rem;
         }
     }
 </style>
 {% endblock %}
 
-{% block extra_js %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // User Growth Chart
-    const userGrowthCtx = document.getElementById('userGrowthChart');
-    if (userGrowthCtx) {
-        const userGrowthData = JSON.parse('{{ user_growth_data|escapejs }}');
-        
-        new Chart(userGrowthCtx, {
-            type: 'line',
-            data: {
-                labels: userGrowthData.map(item => item.month),
-                datasets: [{
-                    label: 'Total Users',
-                    data: userGrowthData.map(item => item.total_users),
-                    borderColor: '#4CAF50',
-                    backgroundColor: 'rgba(76, 175, 80, 0.05)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#4CAF50',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }, {
-                    label: 'Active Users',
-                    data: userGrowthData.map(item => item.active_users),
-                    borderColor: '#FFC107',
-                    backgroundColor: 'rgba(255, 193, 7, 0.05)',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#FFC107',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        titleFont: { size: 14 },
-                        bodyFont: { size: 12 },
-                        padding: 12,
-                        cornerRadius: 4
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            drawBorder: false,
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            padding: 10
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            padding: 10
-                        }
-                    }
-                },
-                elements: {
-                    line: {
-                        borderWidth: 2
-                    }
-                }
-            }
-        });
-    }
+{% block content %}
+<!-- Statistics Cards with Professional Icons -->
+<div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-card-admin primary">
+            <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user-group.svg" class="stat-icon" alt="Users Icon">
+            <div class="stat-number">{{ total_users|default:"0" }}</div>
+            <div class="stat-label">Total Users</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> {{ active_users }} active
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card-admin success">
+            <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/beaker.svg" class="stat-icon" alt="Diagnoses Icon">
+            <div class="stat-number">{{ total_diagnoses|default:"0" }}</div>
+            <div class="stat-label">Total Diagnoses</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> {{ completed_diagnoses }} completed
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card-admin warning">
+            <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/bug-ant.svg" class="stat-icon" alt="Disease Icon">
+            <div class="stat-number">{{ disease_types|default:"0" }}</div>
+            <div class="stat-label">Disease Types</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> In database
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6 mb-3" data-aos="fade-up" data-aos-delay="400">
+        <div class="stat-card-admin info">
+            <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope-open.svg" class="stat-icon" alt="Messages Icon">
+            <div class="stat-number">{{ pending_messages|default:"0" }}</div>
+            <div class="stat-label">Pending Messages</div>
+            <div class="stat-change positive">
+                <i class="fas fa-arrow-up"></i> From users
+            </div>
+        </div>
+    </div>
+</div>
 
-    // Disease Distribution Chart
-    const diseaseCtx = document.getElementById('diseaseChart');
-    if (diseaseCtx) {
-        const diseaseData = JSON.parse('{{ disease_stats|escapejs }}');
-        
-        new Chart(diseaseCtx, {
-            type: 'doughnut',
-            data: {
-                labels: diseaseData.map(item => item.predicted_disease__name),
-                datasets: [{
-                    data: diseaseData.map(item => item.count),
-                    backgroundColor: [
-                        '#4CAF50', '#8BC34A', '#CDDC39', '#FFC107',
-                        '#FF9800', '#FF5722', '#F44336', '#9C27B0',
-                        '#673AB7', '#3F51B5', '#2196F3', '#03A9F4',
-                        '#00BCD4', '#009688'
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            pointStyle: 'circle'
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        bodyFont: { size: 12 },
-                        padding: 12,
-                        cornerRadius: 4,
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((value / total) * 100);
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
-                },
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                }
-            }
-        });
-    }
+<!-- Chart Containers -->
+<div class="row">
+    <div class="col-lg-8 mb-4" data-aos="fade-up" data-aos-delay="500">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/chart-trending-up.svg" class="me-2" style="width: 24px; height: 24px;" alt="Analytics Icon"> System Analytics
+            </h5>
+            <div class="row mb-3">
+                <div class="col-md-4 text-center">
+                    <div class="stat-number" style="color: var(--dark-green);">{{ avg_confidence }}%</div>
+                    <div class="stat-label">Avg AI Confidence</div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="stat-number" style="color: var(--medium-green);">
+                        {% widthratio completed_diagnoses total_diagnoses 100 %}%
+                    </div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="stat-number" style="color: var(--accent-green);">{{ user_type_stats|length }}</div>
+                    <div class="stat-label">User Types</div>
+                </div>
+            </div>
+            <canvas id="monthlyTrendsChart" height="120"></canvas>
+        </div>
+    </div>
     
-    // Animate stats cards on scroll
-    const animateStats = function() {
-        const statCards = document.querySelectorAll('.stat-card-admin');
-        statCards.forEach((card, index) => {
-            const cardPosition = card.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight / 1.3;
+    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="600">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope.svg" class="me-2" style="width: 24px; height: 24px;" alt="Messages Icon"> User Messages
+            </h5>
+            <div class="activity-list">
+                {% for message in recent_user_messages %}
+                <div class="activity-item">
+                    <div class="activity-icon {% if message.message_type == 'error' %}danger{% elif message.message_type == 'warning' %}warning{% else %}info{% endif %}">
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope.svg" style="width: 24px; height: 24px;" alt="Message Icon">
+                    </div>
+                    <div>
+                        <div class="fw-medium">{{ message.title|truncatewords:4 }}</div>
+                        <div class="text-muted small">{{ message.message|truncatewords:8 }}</div>
+                        <div class="text-muted small">{{ message.created_at|timesince }} ago</div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-4">
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/inbox.svg" class="mb-2" style="width: 32px; height: 32px;" alt="Inbox Icon">
+                    <p class="text-muted">No user messages</p>
+                </div>
+                {% endfor %}
+            </div>
             
-            if (cardPosition < screenPosition) {
-                card.style.transform = 'translateY(0)';
-                card.style.opacity = '1';
-            }
-        });
-    };
+            <div class="mt-3">
+                <a href="{% url 'crops:admin_send_broadcast' %}" class="btn btn-primary btn-sm w-100">
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/megaphone.svg" class="me-2" style="width: 20px; height: 20px;" alt="Broadcast Icon"> Send Broadcast Message
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Disease and Activity Sections -->
+<div class="row">
+    <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="700">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/chart-pie.svg" class="me-2" style="width: 24px; height: 24px;" alt="Disease Icon"> Disease Distribution
+            </h5>
+            <canvas id="diseaseChart" height="150"></canvas>
+        </div>
+    </div>
     
-    window.addEventListener('scroll', animateStats);
-    animateStats(); // Initialize
+    <div class="col-lg-6 mb-4" data-aos="fade-up" data-aos-delay="800">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/clock.svg" class="me-2" style="width: 24px; height: 24px;" alt="Activity Icon"> Recent System Activity
+            </h5>
+            <div class="activity-list">
+                {% for user in recent_users|slice:":3" %}
+                <div class="activity-item">
+                    <div class="activity-icon success">
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user-plus.svg" style="width: 24px; height: 24px;" alt="User Icon">
+                    </div>
+                    <div>
+                        <div class="fw-medium">New User: {{ user.username }}</div>
+                        <div class="text-muted small">
+                            {% if user.userprofile %}{{ user.userprofile.get_user_type_display }}{% endif %}
+                        </div>
+                        <div class="text-muted small">{{ user.date_joined|timesince }} ago</div>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                {% for diagnosis in recent_diagnoses|slice:":2" %}
+                <div class="activity-item">
+                    <div class="activity-icon info">
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/beaker.svg" style="width: 24px; height: 24px;" alt="Diagnosis Icon">
+                    </div>
+                    <div>
+                        <div class="fw-medium">New Diagnosis</div>
+                        <div class="text-muted small">{{ diagnosis.user.username }} - {{ diagnosis.crop_type.name|default:"Unknown crop" }}</div>
+                        <div class="text-muted small">{{ diagnosis.created_at|timesince }} ago</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+<script>
+// Enhanced chart styling with animations
+const monthlyCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+const monthlyData = {{ monthly_diagnoses|safe }};
+
+new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: monthlyData.map(item => item.month),
+        datasets: [{
+            label: 'Diagnoses',
+            data: monthlyData.map(item => item.count),
+            borderColor: 'var(--medium-green)',
+            backgroundColor: 'rgba(46, 125, 50, 0.25)',
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: 'var(--light-green)',
+            pointBorderColor: 'var(--background-white)',
+            pointHoverRadius: 8,
+            pointHoverBackgroundColor: 'var(--dark-green)',
+            pointRadius: 5
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                backgroundColor: 'var(--dark-green)',
+                titleFont: { family: 'Inter', size: 14, weight: 'bold' },
+                bodyFont: { family: 'Inter', size: 12 },
+                cornerRadius: 8
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: '#e0e0e0', lineWidth: 1 },
+                ticks: { color: 'var(--text-black)', font: { family: 'Inter', size: 12 } }
+            },
+            x: {
+                grid: { display: false },
+                ticks: { color: 'var(--text-black)', font: { family: 'Inter', size: 12 } }
+            }
+        },
+        animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+        }
+    }
+});
+
+const diseaseCtx = document.getElementById('diseaseChart').getContext('2d');
+const diseaseData = {{ disease_stats|safe }};
+
+new Chart(diseaseCtx, {
+    type: 'doughnut',
+    data: {
+        labels: diseaseData.map(item => item.predicted_disease__name),
+        datasets: [{
+            data: diseaseData.map(item => item.count),
+            backgroundColor: [
+                'var(--medium-green)',
+                'var(--dark-green)',
+                'var(--accent-green)',
+                '#e09b3d',
+                '#d15a3f',
+                '#6c757d'
+            ],
+            borderColor: 'var(--background-white)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    font: { family: 'Inter', size: 12 },
+                    color: 'var(--text-black)',
+                    padding: 15
+                }
+            },
+            tooltip: {
+                backgroundColor: 'var(--dark-green)',
+                titleFont: { family: 'Inter', size: 14, weight: 'bold' },
+                bodyFont: { family: 'Inter', size: 12 },
+                cornerRadius: 8
+            }
+        },
+        animation: {
+            duration: 1500,
+            easing: 'easeOutQuart'
+        }
+    }
 });
 </script>
 {% endblock %}

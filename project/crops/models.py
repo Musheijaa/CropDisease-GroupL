@@ -9,6 +9,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=15, blank=True)
     location = models.CharField(max_length=100, blank=True)
     farm_size = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    primary_crops = models.CharField(max_length=200, blank=True, help_text="Main crops you grow")
     user_type = models.CharField(max_length=20, choices=[
         ('farmer', 'Farmer'),
         ('agronomist', 'Agronomist'),
@@ -130,6 +131,7 @@ class SystemMessage(models.Model):
     message = models.TextField()
     message_type = models.CharField(max_length=20, choices=MESSAGE_TYPES, default='info')
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_messages')
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     

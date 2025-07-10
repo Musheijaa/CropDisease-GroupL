@@ -33,32 +33,11 @@
                         Maximize yields and minimize losses with our intelligent plant health platform.
                     </p>
 
-                    <div class="hero-stats mb-5">
-                        <div class="row g-4">
-                            <div class="col-4">
-                                <div class="stat-item text-center">
-                                    <h3 class="fw-bold mb-1">99%</h3>
-                                    <small class="text-white-50">Accuracy</small>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="stat-item text-center">
-                                    <h3 class="fw-bold mb-1">{{ total_diagnoses|default:"50K+" }}</h3>
-                                    <small class="text-white-50">Plants Analyzed</small>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="stat-item text-center">
-                                    <h3 class="fw-bold mb-1">24/7</h3>
-                                    <small class="text-white-50">Support</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    
 
                     <div class="hero-actions d-flex gap-3 flex-wrap">
                         {% if user.is_authenticated %}
-                        <a href="{% url 'crops:dashboard' %}" class="btn btn-light btn-lg px-5 py-3 rounded-pill shadow-lg">
+                        <a href="{% url 'crops:home' %}" class="btn btn-light btn-lg px-5 py-3 rounded-pill shadow-lg">
                             <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                         </a>
                         <a href="{% url 'crops:upload_image' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill">
@@ -170,13 +149,13 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-success mb-0">0.3s</h6>
+                                        <h6 class="fw-bold text-success mb-0"></h6>
                                         <small class="text-muted">Detection Time</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-success mb-0">99%</h6>
+                                        <h6 class="fw-bold text-success mb-0"></h6>
                                         <small class="text-muted">Accuracy</small>
                                     </div>
                                 </div>
@@ -200,13 +179,13 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-primary mb-0">500+</h6>
+                                        <h6 class="fw-bold text-primary mb-0"></h6>
                                         <small class="text-muted">Treatments</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-primary mb-0">95%</h6>
+                                        <h6 class="fw-bold text-primary mb-0"></h6>
                                         <small class="text-muted">Success Rate</small>
                                     </div>
                                 </div>
@@ -230,13 +209,13 @@
                             <div class="row g-3">
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-warning mb-0">30%</h6>
+                                        <h6 class="fw-bold text-warning mb-0"></h6>
                                         <small class="text-muted">Yield Increase</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
                                     <div class="stat-mini">
-                                        <h6 class="fw-bold text-warning mb-0">24/7</h6>
+                                        <h6 class="fw-bold text-warning mb-0"></h6>
                                         <small class="text-muted">Monitoring</small>
                                     </div>
                                 </div>
@@ -249,87 +228,89 @@
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="how-it-works bg-light py-5">
-    <div class="container">
-        <div class="text-center mb-5" data-aos="fade-up">
-            <div class="section-badge mb-3">
-                <span class="badge bg-primary bg-opacity-10 text-primary px-4 py-2 rounded-pill">
-                    <i class="fas fa-cogs me-2"></i>How It Works
-                </span>
-            </div>
-            <h2 class="display-5 fw-bold mb-3">Simple Steps to Healthier Crops</h2>
-            <p class="lead text-muted">Get started in minutes with our intuitive platform</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
-                <div class="step-card text-center">
-                    <div class="step-number">1</div>
-                    <div class="step-icon">
-                        <i class="fas fa-camera"></i>
-                    </div>
-                    <h5 class="fw-bold mt-3">Capture</h5>
-                    <p class="text-muted">Take a photo of your plant or upload an existing image</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
-                <div class="step-card text-center">
-                    <div class="step-number">2</div>
-                    <div class="step-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                    </div>
-                    <h5 class="fw-bold mt-3">Upload</h5>
-                    <p class="text-muted">Submit your image to our AI analysis system</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
-                <div class="step-card text-center">
-                    <div class="step-number">3</div>
-                    <div class="step-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h5 class="fw-bold mt-3">Analyze</h5>
-                    <p class="text-muted">Our AI detects diseases and assesses plant health</p>
-                </div>
-            </div>
-            
-            <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
-                <div class="step-card text-center">
-                    <div class="step-number">4</div>
-                    <div class="step-icon">
-                        <i class="fas fa-file-prescription"></i>
-                    </div>
-                    <h5 class="fw-bold mt-3">Results</h5>
-                    <p class="text-muted">Receive diagnosis and treatment recommendations</p>
-                </div>
+<!-- Inspiration Section -->
+<section class="inspiration-section py-5 position-relative overflow-hidden">
+    <div class="inspiration-bg" style="background-image: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.1.0&auto=format&fit=crop&w=1950&q=80');"></div>
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center text-white" data-aos="fade-up">
+                <h2 class="display-4 fw-bold mb-4">Join the Agricultural Revolution</h2>
+                <p class="lead mb-5">"The greatest fine art of the future will be the making of a comfortable living from a small piece of land." <br>- Abraham Lincoln</p>
+                
             </div>
         </div>
     </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section py-5 bg-gradient-success text-white">
+<!-- Mission Section -->
+<section class="py-5 bg-light">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-lg-8" data-aos="fade-right">
-                <h2 class="display-5 fw-bold mb-3">Ready to Protect Your Crops?</h2>
-                <p class="lead mb-4">
-                    Join thousands of farmers using FloraSight to increase yields and reduce losses with AI-powered plant health monitoring.
-                </p>
+            <div class="col-lg-6 mb-5 mb-lg-0" data-aos="fade-right">
+                <div class="mission-image-container">
+                    <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-4.1.0&auto=format&fit=crop&w=1350&q=80" 
+                         alt="Farmer using technology" class="img-fluid rounded-4 shadow-lg">
+                    <div class="mission-stats-card">
+                        <div class="row g-3 text-center">
+                            <div class="col-4">
+                                <h4 class="fw-bold text-success mb-1"></h4>
+                                <small class="text-muted">Happy Farmers</small>
+                            </div>
+                            <div class="col-4">
+                                <h4 class="fw-bold text-success mb-1"></h4>
+                                <small class="text-muted">Plants Saved</small>
+                            </div>
+                            <div class="col-4">
+                                <h4 class="fw-bold text-success mb-1"></h4>
+                                <small class="text-muted">Accuracy</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-4 text-lg-end" data-aos="fade-left">
-                {% if not user.is_authenticated %}
-                <a href="{% url 'crops:register' %}" class="btn btn-light btn-lg px-5 py-3 rounded-pill shadow-lg">
-                    <i class="fas fa-rocket me-2"></i> Start Free Trial
-                </a>
-                {% else %}
-                <a href="{% url 'crops:upload_image' %}" class="btn btn-light btn-lg px-5 py-3 rounded-pill shadow-lg">
-                    <i class="fas fa-camera me-2"></i> New Diagnosis
-                </a>
-                {% endif %}
+            
+            <div class="col-lg-6" data-aos="fade-left">
+                <div class="ps-lg-5">
+                    <div class="section-badge mb-3">
+                        <span class="badge bg-success bg-opacity-10 text-success px-4 py-2 rounded-pill">
+                            <i class="fas fa-bullseye me-2"></i>Our Mission
+                        </span>
+                    </div>
+                    <h2 class="display-5 fw-bold mb-4">Empowering Farmers with AI</h2>
+                    <p class="lead text-muted mb-4">
+                        FloraSight was born from a simple idea: what if every farmer had access to 
+                        expert plant disease diagnosis in their pocket? Today, we're making that vision 
+                        a reality through artificial intelligence.
+                    </p>
+                    <div class="about-features">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="about-feature-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Increase crop yields</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="about-feature-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Reduce chemical usage</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="about-feature-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Early disease detection</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="about-feature-item">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>Sustainable practices</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -609,45 +590,43 @@
     border-radius: 10px;
 }
 
-/* How It Works */
-.step-card {
-    background: white;
-    border-radius: 20px;
-    padding: 2rem 1.5rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
+/* Inspiration Section */
+.inspiration-section {
+    padding: 100px 0;
+    position: relative;
+    z-index: 1;
+}
+
+.inspiration-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    opacity: 0.9;
 }
 
-.step-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+.inspiration-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(4, 120, 87, 0.9) 100%);
+    z-index: -1;
 }
 
-.step-number {
-    width: 40px;
-    height: 40px;
-    background: #059669;
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    margin: 0 auto 1rem;
+.inspiration-section h2 {
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-.step-icon {
-    width: 80px;
-    height: 80px;
-    background: rgba(5,150,105,0.1);
-    color: #059669;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2rem;
-    margin: 0 auto;
+.inspiration-section p {
+    font-style: italic;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 /* CTA Section */
@@ -682,6 +661,10 @@
     .secondary-image {
         width: 100px;
         height: 100px;
+    }
+    
+    .inspiration-section {
+        padding: 60px 0;
     }
 }
 

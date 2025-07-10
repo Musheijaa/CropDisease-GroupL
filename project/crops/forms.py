@@ -41,7 +41,7 @@ class DiagnosisForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['phone_number', 'location', 'farm_size', 'user_type']
+        fields = ['phone_number', 'location', 'farm_size', 'user_type', 'primary_crops']
         widgets = {
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -58,5 +58,9 @@ class UserProfileForm(forms.ModelForm):
             }),
             'user_type': forms.Select(attrs={
                 'class': 'form-control'
+            }),
+            'primary_crops': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., Maize, Beans, Coffee'
             }),
         }

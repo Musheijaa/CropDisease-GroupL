@@ -3,16 +3,169 @@
 {% block title %}Add User - FloraSight Admin{% endblock %}
 {% block page_title %}Add New User{% endblock %}
 
+{% block extra_css %}
+<style>
+    /* Agricultural theme matching other admin templates */
+    :root {
+        --dark-green: #1B5E20; /* Deep forest green */
+        --medium-green: #2E7D32; /* Rich green */
+        --light-green: #4CAF50; /* Lighter green */
+        --accent-green: #689F38; /* Agricultural accent */
+        --background-white: #ffffff; /* White background */
+        --text-black: #000000; /* Black text for contrast */
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Chart Container (used for form) */
+    .chart-container {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-3px);
+    }
+
+    .chart-container h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.3px;
+    }
+
+    .chart-container h6 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Form Styling */
+    .form-control, .form-select {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        color: var(--text-black);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--medium-green);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        outline: none;
+    }
+
+    .form-label {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    .text-danger {
+        color: #d15a3f !important;
+        font-size: 0.85rem;
+    }
+
+    /* Buttons */
+    .btn-success {
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--light-green) 0%, var(--accent-green) 100%);
+    }
+
+    .btn-outline-secondary {
+        border-color: #e0e0e0;
+        color: var(--text-black);
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--light-green);
+        color: white;
+        border-color: var(--light-green);
+    }
+
+    /* Separator */
+    hr {
+        border-top: 1px solid #e0e0e0;
+        margin: 2rem 0;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .chart-container {
+            padding: 1.5rem;
+        }
+
+        .chart-container h5 {
+            font-size: 1.1rem;
+        }
+
+        .chart-container h6 {
+            font-size: 0.95rem;
+        }
+
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+        }
+
+        .form-text, .text-danger {
+            font-size: 0.8rem;
+        }
+
+        .btn-success, .btn-outline-secondary {
+            padding: 0.6rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center" data-aos="fade-up">
     <div class="col-lg-8">
         <div class="chart-container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h5 class="mb-0">
-                    <i class="fas fa-user-plus me-2"></i>Create New User
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user-plus.svg" class="me-2" style="width: 24px; height: 24px;" alt="Add User Icon"> Create New User
                 </h5>
                 <a href="{% url 'crops:admin_users' %}" class="btn btn-outline-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Users
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/arrow-left.svg" class="me-2" style="width: 20px; height: 20px;" alt="Back Icon"> Back to Users
                 </a>
             </div>
 
@@ -101,7 +254,7 @@
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <a href="{% url 'crops:admin_users' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
                     <button type="submit" class="btn btn-success">
-                        <i class="fas fa-save me-2"></i>Create User
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/check-circle.svg" class="me-2" style="width: 20px; height: 20px;" alt="Save Icon"> Create User
                     </button>
                 </div>
             </form>

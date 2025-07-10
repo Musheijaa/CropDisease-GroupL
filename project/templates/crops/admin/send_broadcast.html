@@ -1,0 +1,333 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Send Broadcast Message - FloraSight Admin{% endblock %}
+{% block page_title %}Send Broadcast Message{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Agricultural theme matching other admin templates */
+    :root {
+        --dark-green: #1B5E20; /* Deep forest green */
+        --medium-green: #2E7D32; /* Rich green */
+        --light-green: #4CAF50; /* Lighter green */
+        --accent-green: #689F38; /* Agricultural accent */
+        --background-white: #ffffff; /* White background */
+        --text-black: #000000; /* Black text for contrast */
+        --glass-bg: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Chart Container (used for form and message examples) */
+    .chart-container {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+        transition: transform 0.3s ease;
+    }
+
+    .chart-container:hover {
+        transform: translateY(-3px);
+    }
+
+    .chart-container h5 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* Form Styling */
+    .form-control, .form-select, .form-control:focus, .form-select:focus {
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        color: var(--text-black);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--medium-green);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.25);
+        outline: none;
+    }
+
+    .form-label {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.85rem;
+    }
+
+    .text-danger {
+        color: #d15a3f !important;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        background: linear-gradient(135deg, var(--medium-green) 0%, var(--light-green) 100%);
+    }
+
+    .btn-outline-secondary {
+        border-color: #e0e0e0;
+        color: var(--text-black);
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--light-green);
+        color: white;
+        border-color: var(--light-green);
+    }
+
+    /* Alert */
+    .alert-info {
+        background: var(--background-white);
+        border: 1px solid var(--accent-green);
+        border-left: 4px solid var(--accent-green);
+        border-radius: 8px;
+        padding: 1rem;
+        color: var(--text-black);
+        font-size: 0.95rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Message Examples */
+    .card {
+        background: var(--background-white);
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    .card.border-info {
+        border-left: 4px solid var(--accent-green);
+    }
+
+    .card.border-warning {
+        border-left: 4px solid #e09b3d;
+    }
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-title.text-info {
+        color: var(--accent-green) !important;
+    }
+
+    .card-title.text-warning {
+        color: #e09b3d !important;
+    }
+
+    .card-text {
+        color: var(--text-black);
+        font-size: 0.85rem;
+    }
+
+    h6 {
+        color: var(--text-black);
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .chart-container {
+            padding: 1.5rem;
+        }
+
+        .chart-container h5 {
+            font-size: 1.1rem;
+        }
+
+        .form-control, .form-select {
+            font-size: 0.9rem;
+            padding: 0.6rem 0.8rem;
+        }
+
+        .btn-primary, .btn-outline-secondary {
+            padding: 0.6rem 1rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+        }
+
+        .form-text {
+            font-size: 0.8rem;
+        }
+
+        .alert-info {
+            font-size: 0.9rem;
+            padding: 0.75rem;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+        }
+
+        .card-text {
+            font-size: 0.8rem;
+        }
+
+        h6 {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center" data-aos="fade-up">
+    <div class="col-lg-8">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/megaphone.svg" class="me-2" style="width: 24px; height: 24px;" alt="Broadcast Icon"> Send Broadcast Message
+                </h5>
+                <a href="{% url 'crops:admin_panel' %}" class="btn btn-outline-secondary">
+                    <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/arrow-left.svg" class="me-2" style="width: 20px; height: 20px;" alt="Back Icon"> Back to Dashboard
+                </a>
+            </div>
+
+            <div class="alert alert-info">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/information-circle.svg" class="me-2" style="width: 20px; height: 20px;" alt="Info Icon">
+                Use this form to send important announcements to users. Messages can be sent to all users or specific user types.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="title" class="form-label fw-bold">
+                            Message Title <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="title" name="title" 
+                               placeholder="e.g., Important Planting Season Update" required>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label for="message_type" class="form-label fw-bold">
+                            Message Type <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" id="message_type" name="message_type" required>
+                            <option value="info">Information</option>
+                            <option value="warning">Warning/Alert</option>
+                            <option value="success">Good News</option>
+                            <option value="error">Urgent Notice</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="target_audience" class="form-label fw-bold">
+                        Target Audience <span class="text-danger">*</span>
+                    </label>
+                    <select class="form-select" id="target_audience" name="target_audience" required>
+                        <option value="all">All Users</option>
+                        <option value="farmer">Farmers Only</option>
+                        <option value="agronomist">Agronomists Only</option>
+                        <option value="extension_worker">Extension Workers Only</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="message" class="form-label fw-bold">
+                        Message Content <span class="text-danger">*</span>
+                    </label>
+                    <textarea class="form-control" id="message" name="message" rows="6" 
+                              placeholder="Write your message here..." required></textarea>
+                    <div class="form-text">
+                        Be clear and concise. Include actionable information when relevant.
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'crops:admin_panel' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/paper-airplane.svg" class="me-2" style="width: 20px; height: 20px;" alt="Send Icon"> Send Broadcast
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Message Examples -->
+<div class="row mt-4" data-aos="fade-up" data-aos-delay="100">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/light-bulb.svg" class="me-2" style="width: 24px; height: 24px;" alt="Examples Icon"> Message Examples
+            </h5>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Seasonal Information</h6>
+                    <div class="card border-info mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-info">Optimal Planting Season</h6>
+                            <p class="card-text small">
+                                "The rainy season is approaching. This is the ideal time to plant maize and beans. 
+                                Ensure your seeds are treated and soil is well-prepared."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <h6>Disease Outbreak Alert</h6>
+                    <div class="card border-warning mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-warning">Disease Alert: Late Blight</h6>
+                            <p class="card-text small">
+                                "Late blight has been detected in nearby regions. Monitor your tomato crops closely 
+                                and apply preventive fungicides as recommended."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

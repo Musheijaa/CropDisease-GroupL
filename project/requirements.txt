@@ -1,3 +1,39 @@
 Django==4.2.7
 Pillow==10.1.0
 python-decouple==3.8
+from django.shortcuts import render
+from .models import Diagnosis, User, UserProfile, Message
+from django.db.models import Count
+from django.contrib import messages
+from django.utils import timezone
+
+def admin_panel(request):
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    total_diagnoses = Diagnosis.objects.count()
+    completed_diagnoses = Diagnosis.objects.filter(status='completed').count()
+    disease_types = Diagnosis.objects.values('predicted_disease__name').distinct().count()
+    pending_messages = Message.objects.filter(is_read=False).count()
+    avg_confidence = Diagnosis.objects.aggregate(avg_conf=Avg('confidence_score'))['avg_conf'] or 0
+    monthly_diagnoses = Diagnosis.objects.extra({'month': "to_char(created_at, 'Mon YYYY')"}).values('month').annotate(count=Count('id')).order_by('month')
+    disease_stats = Diagnosis.objects.values('predicted_disease__name').annotate(count=Count('id')).order_by('-count')
+    recent_users = User.objects.order_by('-date_joined')[:5]
+    recent_diagnoses = Diagnosis.objects.order_by('-created_at')[:5]
+    recent_user_messages = Message.objects.order_by('-created_at')[:5]
+
+    context = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'total_diagnoses': total_diagnoses,
+        'completed_diagnoses': completed_diagnoses,
+        'disease_types': disease_types,
+        'pending_messages': pending_messages,
+        'avg_confidence': round(avg_confidence * 100) if avg_confidence else 0,
+        'monthly_diagnoses': list(monthly_diagnoses),
+        'disease_stats': list(disease_stats),
+        'recent_users': recent_users,
+        'recent_diagnoses': recent_diagnoses,
+        'recent_user_messages': recent_user_messages,
+        'user_type_stats': UserProfile.objects.values('user_type').distinct(),
+    }
+    return render(request, 'crops/admin_dashboard.html', context)

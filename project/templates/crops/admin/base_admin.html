@@ -8,152 +8,188 @@
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- AOS CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     
     <style>
+        /* Agricultural theme matching dashboard */
+        :root {
+            --dark-green: #1B5E20; /* Deep forest green */
+            --medium-green: #2E7D32; /* Rich green */
+            --light-green: #4CAF50; /* Lighter green */
+            --accent-green: #689F38; /* Agricultural accent */
+            --background-white: #ffffff; /* White background */
+            --text-black: #000000; /* Black text for contrast */
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            background: var(--background-white);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-black);
+            line-height: 1.6;
+        }
+
+        /* Enhanced Sidebar */
         .admin-sidebar {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            background: linear-gradient(135deg, var(--dark-green) 0%, var(--medium-green) 100%);
             min-height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
+            width: 260px;
             z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
         }
-        
-        .admin-content {
-            margin-left: 250px;
-            padding: 20px;
-            min-height: 100vh;
-            background: #f8f9fa;
-        }
-        
+
         .sidebar-brand {
-            padding: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.25);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1.75rem;
+            text-align: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.5px;
+            transition: background 0.3s ease;
         }
-        
+
+        .sidebar-brand:hover {
+            background: rgba(0, 0, 0, 0.35);
+        }
+
         .sidebar-nav {
-            padding: 20px 0;
+            padding: 1.5rem 0;
         }
-        
+
         .sidebar-nav .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.8rem 1.5rem;
             border-radius: 0;
+            font-size: 1rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
             transition: all 0.3s ease;
         }
-        
+
         .sidebar-nav .nav-link:hover,
         .sidebar-nav .nav-link.active {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav .nav-link img {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Main Content Area */
+        .admin-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: 100vh;
+            background: var(--background-white);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Header */
+        .admin-header {
+            background: var(--background-white);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e0e0e0;
+            margin: -30px -30px 2rem -30px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .admin-header h4 {
+            color: var(--text-black);
+            font-weight: 600;
+            font-size: 1.5rem;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-outline-secondary {
+            border-color: #e0e0e0;
+            color: var(--medium-green);
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            background: var(--light-green);
+            color: white;
+            border-color: var(--light-green);
+        }
+
+        .dropdown-toggle {
+            border-color: #e0e0e0;
+            color: var(--text-black);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            background: var(--light-green);
+            color: white;
+            border-color: var(--light-green);
+        }
+
+        .dropdown-menu {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            color: var(--text-black);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--light-green);
             color: white;
         }
-        
-        .sidebar-nav .nav-link i {
-            width: 20px;
-            margin-right: 10px;
+
+        /* Alerts */
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
-        
-        .admin-header {
-            background: white;
-            padding: 15px 30px;
-            border-bottom: 1px solid #dee2e6;
-            margin: -20px -20px 30px -20px;
+
+        .alert-dismissible .btn-close {
+            padding: 1rem;
         }
-        
-        .stat-card-admin {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            border-left: 4px solid #28a745;
-            transition: transform 0.3s ease;
-        }
-        
-        .stat-card-admin:hover {
-            transform: translateY(-2px);
-        }
-        
-        .stat-card-admin.primary { border-left-color: #007bff; }
-        .stat-card-admin.success { border-left-color: #28a745; }
-        .stat-card-admin.warning { border-left-color: #ffc107; }
-        .stat-card-admin.danger { border-left-color: #dc3545; }
-        .stat-card-admin.info { border-left-color: #17a2b8; }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .stat-change {
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-        
-        .stat-change.positive { color: #28a745; }
-        .stat-change.negative { color: #dc3545; }
-        
-        .chart-container {
-            background: white;
-            border-radius: 10px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .activity-item {
-            padding: 15px;
-            border-bottom: 1px solid #f1f3f4;
-            display: flex;
-            align-items: center;
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 0.9rem;
-        }
-        
-        .activity-icon.success { background: #d4edda; color: #155724; }
-        .activity-icon.info { background: #d1ecf1; color: #0c5460; }
-        .activity-icon.warning { background: #fff3cd; color: #856404; }
-        
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .admin-sidebar {
                 transform: translateX(-100%);
+                width: 260px;
             }
-            
+
             .admin-content {
                 margin-left: 0;
+                padding: 20px;
             }
-            
+
             .admin-sidebar.show {
                 transform: translateX(0);
+            }
+
+            .admin-header {
+                margin: -20px -20px 1.5rem -20px;
+                padding: 1rem 1.5rem;
             }
         }
     </style>
@@ -162,10 +198,11 @@
 </head>
 <body>
     <!-- Admin Sidebar -->
-    <div class="admin-sidebar" id="adminSidebar">
+    <div class="admin-sidebar" id="adminSidebar" data-aos="fade-right">
         <div class="sidebar-brand">
             <h4 class="text-white mb-0">
-                <i class="fas fa-leaf me-2"></i>FloraSight Admin
+                <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user-circle.svg" class="me-2" style="width: 24px; height: 24px;" alt="Admin Icon"> 
+                <span style="font-size: 1.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Admin</span>
             </h4>
         </div>
         
@@ -174,48 +211,42 @@
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'admin_panel' %}active{% endif %}" 
                        href="{% url 'crops:admin_panel' %}">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/chart-bar-square.svg" alt="Dashboard Icon"> Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}" 
                        href="{% url 'crops:admin_users' %}">
-                        <i class="fas fa-users"></i>Users
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user-group.svg" alt="Users Icon"> Users
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'admin_diseases' %}active{% endif %}" 
                        href="{% url 'crops:admin_diseases' %}">
-                        <i class="fas fa-virus"></i>Diseases
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/bug-ant.svg" alt="Diseases Icon"> Diseases
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'admin_diagnoses' %}active{% endif %}" 
                        href="{% url 'crops:admin_diagnoses' %}">
-                        <i class="fas fa-microscope"></i>Diagnoses
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_analytics' %}active{% endif %}" 
-                       href="{% url 'crops:admin_analytics' %}">
-                        <i class="fas fa-chart-bar"></i>Analytics
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/beaker.svg" alt="Diagnoses Icon"> Diagnoses
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'admin_messages' %}active{% endif %}" 
                        href="{% url 'crops:admin_messages' %}">
-                        <i class="fas fa-envelope"></i>Messages
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/envelope.svg" alt="Messages Icon"> Messages
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_settings' %}active{% endif %}" 
-                       href="{% url 'crops:admin_settings' %}">
-                        <i class="fas fa-cog"></i>Settings
+                    <a class="nav-link {% if request.resolver_match.url_name == 'admin_send_broadcast' %}active{% endif %}" 
+                       href="{% url 'crops:admin_send_broadcast' %}">
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/megaphone.svg" alt="Broadcast Icon"> Send Broadcast
                     </a>
                 </li>
                 <li class="nav-item mt-4">
                     <a class="nav-link" href="{% url 'crops:home' %}">
-                        <i class="fas fa-arrow-left"></i>Back to Site
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/arrow-left.svg" alt="Back Icon"> Back to Site
                     </a>
                 </li>
             </ul>
@@ -225,18 +256,18 @@
     <!-- Main Content -->
     <div class="admin-content">
         <!-- Header -->
-        <div class="admin-header">
+        <div class="admin-header" data-aos="fade-down">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <button class="btn btn-outline-secondary d-md-none" id="sidebarToggle">
-                        <i class="fas fa-bars"></i>
+                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/bars-3.svg" style="width: 20px; height: 20px;" alt="Menu Icon">
                     </button>
                     <h4 class="mb-0 d-inline-block ms-2">{% block page_title %}Admin Dashboard{% endblock %}</h4>
                 </div>
                 <div class="d-flex align-items-center">
                     <div class="dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-2"></i>{{ user.username }}
+                            <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/user.svg" class="me-2" style="width: 20px; height: 20px;" alt="User Icon"> {{ user.username }}
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'crops:profile' %}">Profile</a></li>
@@ -250,22 +281,33 @@
 
         <!-- Messages -->
         {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div data-aos="fade-up">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
         </div>
-        {% endfor %}
         {% endif %}
 
         <!-- Page Content -->
-        {% block content %}{% endblock %}
+        <div data-aos="fade-up">
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     
     <script>
+        // Initialize AOS
+        AOS.init({ duration: 1000, once: true });
+
         // Sidebar toggle for mobile
         document.getElementById('sidebarToggle').addEventListener('click', function() {
             document.getElementById('adminSidebar').classList.toggle('show');
