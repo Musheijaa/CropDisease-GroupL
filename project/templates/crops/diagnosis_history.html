@@ -39,7 +39,7 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label">&nbsp;</label>
+                            <label class="form-label"> </label>
                             <div class="d-grid">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-search me-2"></i>Filter
@@ -66,6 +66,8 @@
                                     <th>Crop Type</th>
                                     <th>Disease</th>
                                     <th>Confidence</th>
+                                    <th>Treatment</th>
+                                    <th>Prevention</th>
                                     <th>Status</th>
                                     <th>Date</th>
                                     <th>Actions</th>
@@ -95,6 +97,20 @@
                                     <td>
                                         {% if diagnosis.confidence_score %}
                                             {{ diagnosis.confidence_score|floatformat:1 }}%
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.treatment %}
+                                            {{ diagnosis.treatment }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if diagnosis.prevention %}
+                                            {{ diagnosis.prevention }}
                                         {% else %}
                                             <span class="text-muted">-</span>
                                         {% endif %}

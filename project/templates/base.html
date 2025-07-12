@@ -379,8 +379,9 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'crops:diagnosis_history' %}">
-                                    <i class="fas fa-history"></i>My Diagnoses
-                                </a>
+    <i class="fas fa-history"></i>My Diagnoses
+</a>
+
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'crops:send_message_to_admin' %}">
@@ -473,9 +474,10 @@
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item" href="{% url 'logout' %}">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a>
+                                   <form method="POST" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Logout</button>
+</form>
                                 </li>
                             </ul>
                         </li>

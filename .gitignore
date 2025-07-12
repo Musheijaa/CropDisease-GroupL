@@ -3,6 +3,7 @@ venv/
 
 # ML model
 project/ml_models/trained_cnn_model.keras
+/home/ltgwgeorge/Desktop/GeorgeCode/python/RecessPython/CROP_DISEASE/CropDisease-GroupL/project/media/crop_images/
 
 # Other common ignores (optional but recommended)
 __pycache__/

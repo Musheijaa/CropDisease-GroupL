@@ -47,25 +47,20 @@ class Diagnosis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     crop_image = models.ImageField(upload_to='crop_images/')
     crop_type = models.ForeignKey(CropType, on_delete=models.SET_NULL, null=True, blank=True)
-    
-    # ML Model Results (to be populated by ML team)
     predicted_disease = models.ForeignKey(Disease, on_delete=models.SET_NULL, null=True, blank=True)
     confidence_score = models.FloatField(null=True, blank=True)
     severity_level = models.CharField(max_length=20, blank=True)
     affected_area_percentage = models.FloatField(null=True, blank=True)
-    
-    # Environmental data
+    treatment = models.TextField(blank=True)
+    prevention = models.TextField(blank=True)
     temperature = models.FloatField(null=True, blank=True)
     humidity = models.FloatField(null=True, blank=True)
     soil_ph = models.FloatField(null=True, blank=True)
-    
-    # Status and metadata
     status = models.CharField(max_length=20, choices=[
         ('processing', 'Processing'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ], default='processing')
-    
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -75,7 +70,6 @@ class Diagnosis(models.Model):
     
     def __str__(self):
         return f"Diagnosis {self.id} - {self.user.username}"
-
 class Recommendation(models.Model):
     diagnosis = models.OneToOneField(Diagnosis, on_delete=models.CASCADE)
     treatment_plan = models.TextField()
