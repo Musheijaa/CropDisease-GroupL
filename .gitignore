@@ -1,4 +1,15 @@
+# Virtual environment
 venv/
+
+# ML model
+project/ml_models/trained_cnn_model.keras
+
+# Other common ignores (optional but recommended)
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+.envvenv/
 
 
 
