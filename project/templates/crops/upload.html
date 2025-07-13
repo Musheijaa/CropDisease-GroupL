@@ -72,38 +72,17 @@
             transition: transform 0.3s ease-in-out;
         }
 
-        .step-icon.capture {
-            background-color: var(--sky-blue);
-        }
-
-        .step-icon.upload {
-            background-color: var(--green-medium);
-        }
-
-        .step-icon.analyze {
-            background-color: var(--sunlight-yellow);
-            color: #333;
-        }
-
-        .step-icon.results {
-            background-color: var(--plant-red);
-        }
+        .step-icon.capture { background-color: var(--sky-blue); }
+        .step-icon.upload { background-color: var(--green-medium); }
+        .step-icon.analyze { background-color: var(--sunlight-yellow); color: #333; }
+        .step-icon.results { background-color: var(--plant-red); }
 
         /* Hover effect on step icons */
-        .step-icon:hover {
-            transform: scale(1.1);
-        }
+        .step-icon:hover { transform: scale(1.1); }
 
         /* Step content */
-        .step-card h5 {
-            color: var(--text-dark);
-            font-weight: 600;
-        }
-
-        .step-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+        .step-card h5 { color: var(--text-dark); font-weight: 600; }
+        .step-card p { color: var(--text-muted); font-size: 0.95rem; }
 
         /* Upload card */
         .upload-card {
@@ -115,9 +94,7 @@
             transition: 0.3s ease;
         }
 
-        .upload-card:hover {
-            transform: translateY(-4px);
-        }
+        .upload-card:hover { transform: translateY(-4px); }
 
         /* Card header */
         .card-header {
@@ -128,10 +105,7 @@
             text-align: center;
         }
 
-        .card-header h4 {
-            font-weight: 700;
-            font-size: 1.4rem;
-        }
+        .card-header h4 { font-weight: 700; font-size: 1.4rem; }
 
         /* Upload Area */
         .upload-area {
@@ -148,10 +122,7 @@
             transform: scale(1.01);
         }
 
-        .upload-area i {
-            font-size: 3rem;
-            color: var(--green-medium);
-        }
+        .upload-area i { font-size: 3rem; color: var(--green-medium); }
 
         /* Image Preview */
         .image-preview img {
@@ -163,8 +134,7 @@
         }
 
         /* Input styling */
-        .form-control,
-        .form-select {
+        .form-control, .form-select {
             border-radius: 10px;
             border: 1px solid var(--border-light);
             padding: 0.75rem;
@@ -201,30 +171,26 @@
         }
 
         @keyframes arrow-bounce {
-            0%, 100% {
-                transform: translateY(0);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
+
         /* Spinner styles */
-.spinner {
-    display: none;
-    border: 4px solid var(--green-light);
-    border-top: 4px solid var(--green-medium);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
+        .spinner {
+            display: none;
+            border: 4px solid var(--green-light);
+            border-top: 4px solid var(--green-medium);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -241,7 +207,6 @@
             </div>
 
             <div class="row align-items-center justify-content-between">
-                <!-- Steps on the Left -->
                 <div class="col-lg-4 col-md-12 mb-4">
                     <div class="steps-container">
                         <!-- Capture Step -->
@@ -252,7 +217,7 @@
                             <h5 class="fw-bold">Capture</h5>
                             <p>Take a photo of your plant or upload an existing image</p>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="step-arrow">
                             <i class="fas fa-arrow-down"></i>
@@ -266,12 +231,12 @@
                             <h5 class="fw-bold">Upload</h5>
                             <p>Submit your image to our AI analysis system</p>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="step-arrow">
                             <i class="fas fa-arrow-down"></i>
                         </div>
-                        
+
                         <!-- Analyze Step -->
                         <div class="step-card text-center mb-4">
                             <div class="step-icon analyze">
@@ -280,7 +245,7 @@
                             <h5 class="fw-bold">Analyze</h5>
                             <p>Our AI detects diseases and assesses plant health</p>
                         </div>
-                        
+
                         <!-- Arrow -->
                         <div class="step-arrow">
                             <i class="fas fa-arrow-down"></i>
@@ -333,64 +298,22 @@
                                     </small>
                                 </div>
 
-                                <div class="row">
-                                    <!-- Crop Type -->
-                                    <div class="col-md-6 mb-4">
-                                        <label class="form-label fw-bold fs-6">Crop Type</label>
-                                        <select class="form-select" id="id_crop_type" name="crop_type">
-                                            <option value="">Select crop type...</option>
-                                            <option value="corn">Corn</option>
-                                            <option value="wheat">Wheat</option>
-                                            <option value="rice">Rice</option>
-                                            <option value="tomato">Tomato</option>
-                                            <option value="potato">Potato</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                        <small class="form-text text-muted">
-                                            Select the type of crop in the image
-                                        </small>
-                                    </div>
-
-                                    <!-- Temperature -->
-                                    <div class="col-md-6 mb-4">
-                                        <label class="form-label fw-bold fs-6">Temperature (°C)</label>
-                                        <input type="number" class="form-control" id="id_temperature" name="temperature" placeholder="e.g., 25">
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-4">
-                                        <label class="form-label fw-bold fs-6">Humidity (%)</label>
-                                        <input type="number" class="form-control" id="id_humidity" name="humidity" placeholder="e.g., 65">
-                                    </div>
-
-                                    <div class="col-md-6 mb-4">
-                                        <label class="form-label fw-bold fs-6">Soil pH</label>
-                                        <input type="number" class="form-control" id="id_soil_ph" name="soil_ph" step="0.1" placeholder="e.g., 6.5">
-                                    </div>
-                                </div>
-
-                                <!-- Notes -->
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold fs-6">Additional Notes</label>
-                                    <textarea class="form-control" id="id_notes" name="notes" rows="4" placeholder="Any additional observations or concerns..."></textarea>
-                                </div>
+                               
 
                                 <!-- Submit Button -->
                                 <div class="d-grid">
-  <button type="button" class="btn btn-success btn-lg" id="submitBtn">
-    <i class="fas fa-microscope me-2"></i>Analyze Image
-</button>
+                                    <button type="button" class="btn btn-success btn-lg" id="submitBtn">
+                                        <i class="fas fa-microscope me-2"></i>Analyze Image
+                                    </button>
 
-<!-- Loading Spinner (hidden initially) -->
-<div id="loadingSpinner" class="spinner" style="display: none;"></div>
+                                    <!-- Loading Spinner (hidden initially) -->
+                                    <div id="loadingSpinner" class="spinner" style="display: none;"></div>
 
-<!-- Result Section (hidden initially) -->
-<div id="result" class="mt-4" style="display: none;">
-    <h4>Results:</h4>
-    <p id="resultText">Your results will appear here after analysis.</p>
-</div>
-
+                                    <!-- Result Section (hidden initially) -->
+                                    <div id="result" class="mt-4" style="display: none;">
+                                        <h4>Results:</h4>
+                                        <p id="resultText">Your results will appear here after analysis.</p>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -402,56 +325,131 @@
 
     <!-- Bootstrap JS & FontAwesome JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // JavaScript for previewing the uploaded image
-        document.getElementById("id_crop_image").addEventListener("change", function(e) {
-            const file = e.target.files[0];
-            const reader = new FileReader();
-            
-            reader.onload = function() {
-                const preview = document.getElementById("imagePreview");
-                const uploadContent = document.getElementById("uploadContent");
-                preview.style.display = "block";
-                uploadContent.style.display = "none"; // Hide the drag-and-drop area
-                const img = document.getElementById("previewImg");
-                img.src = reader.result;
-            }
+console.log("🌱 Script loaded successfully!");
 
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Remove image preview
-        document.getElementById("removeImage").addEventListener("click", function() {
-            const preview = document.getElementById("imagePreview");
-            const uploadContent = document.getElementById("uploadContent");
-            preview.style.display = "none";
-            uploadContent.style.display = "block"; // Show the drag-and-drop area again
-            document.getElementById("id_crop_image").value = ''; // Clear the file input
-        });
-        // Handle the "Analyze" button click
-document.getElementById("submitBtn").addEventListener("click", function() {
-    // Show loading spinner and disable the button
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("uploadForm");
+    const fileInput = document.getElementById("id_crop_image");
+    const preview = document.getElementById("imagePreview");
+    const previewImg = document.getElementById("previewImg");
+    const removeBtn = document.getElementById("removeImage");
+    const resultBox = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
     const spinner = document.getElementById("loadingSpinner");
     const button = document.getElementById("submitBtn");
-    spinner.style.display = "block"; // Show spinner
-    button.disabled = true; // Disable button
+    const uploadArea = document.getElementById("uploadArea");
 
-    // Simulate processing time (e.g., 3 seconds)
-    setTimeout(function() {
-        // Hide spinner and show results
-        spinner.style.display = "none"; // Hide spinner
-        document.getElementById("result").style.display = "block"; // Show results
-        document.getElementById("resultText").innerText = "Your plant has been diagnosed with [DISEASE NAME]. Treatment options: [TREATMENT].";
+    button.addEventListener("click", function () {
+        console.log("✅ Button clicked");
 
-        // Re-enable the button (optional, if you want to allow retrying)
-        button.disabled = false;
-    }, 3000); // 3 seconds delay to simulate processing
+        // Ensure the image is selected before sending the data
+        if (!fileInput.files.length) {
+            alert("Please select an image first.");
+            return;
+        }
+
+        // Prepare the form data
+        const formData = new FormData(form);
+        spinner.style.display = "inline-block";
+        button.disabled = true;
+        resultBox.style.display = "none";
+
+        // Send the form data to the backend for analysis
+        fetch("{% url 'crops:predict_disease' %}", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            spinner.style.display = "none";
+            button.disabled = false;
+            resultBox.style.display = "block";
+
+            // Handle the response from the backend
+            if (data.status === 'success') {
+                resultText.innerHTML = `
+                    <strong>Diagnosis:</strong> ${data.predicted_disease}<br>
+                    <strong>Confidence:</strong> ${data.confidence}%<br>
+                    <strong>Treatment:</strong> ${data.recommendations.treatment}<br>
+                    <strong>Prevention:</strong> ${data.recommendations.prevention}
+                `;
+
+                // Prepare the data to be saved into the diagnosis history
+                const saveData = {
+                    crop_image: fileInput.files[0],
+                    predicted_disease: data.predicted_disease,
+                    confidence_score: data.confidence,
+                    treatment: data.recommendations.treatment,
+                    prevention: data.recommendations.prevention,
+                    crop_type: formData.get('crop_type') || '',
+                    temperature: formData.get('temperature') || '',
+                    humidity: formData.get('humidity') || '',
+                    soil_ph: formData.get('soil_ph') || '',
+                    notes: formData.get('notes') || ''
+                };
+                console.log("Sending save data:", saveData);
+
+                // Prepare a new FormData object for saving the diagnosis
+                const saveFormData = new FormData();
+                // Add all the form fields to the saveFormData
+                for (const [key, value] of Object.entries(saveData)) {
+                    saveFormData.append(key, value);
+                }
+                console.log("Save FormData keys:", Array.from(saveFormData.keys()));
+
+                // Send the diagnosis data to the server to be saved
+                fetch("{% url 'crops:save_diagnosis' %}", {
+                    method: "POST",
+                    body: saveFormData,
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(saveResponse => {
+                    console.log("✅ Diagnosis saved:", saveResponse);
+                    if (saveResponse.status === 'success') {
+                        alert("Diagnosis saved successfully!");
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ Error saving diagnosis:", error);
+                    alert("Failed to save diagnosis. Check console for details.");
+                });
+            } else {
+                resultText.innerHTML = `❌ <strong>Error:</strong> ${data.error || 'Unknown error occurred'}`;
+            }
+        })
+        .catch(error => {
+            spinner.style.display = "none";
+            button.disabled = false;
+            resultBox.style.display = "block";
+            resultText.innerText = "❌ Error processing image. Please try again.";
+            console.error("❌ Fetch error:", error);
+        });
+    });
+
+    // Function to retrieve the CSRF token from the cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 });
+</script>
 
-
-    </script>
 </body>
 </html>
-{%endblock%}
+{% endblock %}

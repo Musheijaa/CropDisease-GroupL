@@ -16,8 +16,13 @@ urlpatterns = [
     path('send-message/', views.send_message_to_admin, name='send_message_to_admin'),
     path('upload/', views.upload_image, name='upload_image'),
     path('diagnosis/<uuid:diagnosis_id>/', views.diagnosis_detail, name='diagnosis_detail'),
+    path('diagnoses/<int:diagnosis_id>/', views.diagnosis_detail, name='diagnosis_detail'),
     path('diagnoses/', views.diagnosis_history, name='diagnosis_history'),
+
+  
     path('my-diagnoses/', views.my_diagnoses, name='my_diagnoses'),
+    path('api/predict-disease/', views.predict_disease, name='predict_disease'),
+    path('save-diagnosis/', views.save_diagnosis, name='save_diagnosis'),
 
     
     # Profile management

@@ -16,7 +16,15 @@ from django.contrib.auth.views import LoginView
 from .models import Diagnosis, UserProfile, CropType, Disease, Recommendation, IoTReading, SystemMessage, SystemSettings
 from .forms import DiagnosisForm, UserProfileForm
 import json
+import logging
+import tensorflow as tf
+import numpy as np  
 
+
+from django.http import JsonResponse
+
+from django.conf import settings
+from .services.ml_service import get_predictor, DiseasePredictor
 def home(request):
     features = [
         {'icon': 'brain', 'title': 'Advanced AI Detection', 'desc': 'Our AI model analyzes crop images with 99% accuracy...'},
@@ -171,36 +179,6 @@ def diagnosis_detail(request, diagnosis_id):
         'recommendation': recommendation,
     }
     return render(request, 'crops/diagnosis_detail.html', context)
-
-@login_required
-def diagnosis_history(request):
-    """Paginated list of user's diagnosis history"""
-    diagnoses = Diagnosis.objects.filter(user=request.user).order_by('-created_at')
-    
-    # Search functionality
-    search_query = request.GET.get('search')
-    if search_query:
-        diagnoses = diagnoses.filter(
-            Q(predicted_disease__name__icontains=search_query) |
-            Q(crop_type__name__icontains=search_query)
-        )
-    
-    # Filter by status
-    status_filter = request.GET.get('status')
-    if status_filter:
-        diagnoses = diagnoses.filter(status=status_filter)
-    
-    paginator = Paginator(diagnoses, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    context = {
-        'page_obj': page_obj,
-        'search_query': search_query,
-        'status_filter': status_filter,
-    }
-    return render(request, 'crops/diagnosis_history.html', context)
-
 @login_required
 def profile(request):
     """User profile management"""
@@ -641,3 +619,97 @@ def all_messages(request):
         'page_obj': page_obj,
         'unread_count': 0  # Since we just marked all as read
     })
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .services.ml_service import get_predictor
+
+@csrf_exempt
+def predict_disease(request):
+    """Handle image upload and disease prediction"""
+    if request.method == 'POST':
+        if 'crop_image' not in request.FILES:
+            return JsonResponse({
+                'status': 'error',
+                'error': 'No image file provided'
+            }, status=400)
+            
+        try:
+            image_file = request.FILES['crop_image']
+            result = get_predictor().predict_disease(image_file)
+            return JsonResponse(result)
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'error': str(e)
+            }, status=500)
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'error': 'Only POST requests are allowed'
+        }, status=405)
+import logging
+
+logger = logging.getLogger(__name__)
+
+@csrf_exempt  # Remove this in production; use proper CSRF handling
+def save_diagnosis(request):
+    if request.method == 'POST':
+        print("Received save_diagnosis request with POST data:", request.POST)
+        print("Received file data:", request.FILES)
+
+        predicted_disease_name = request.POST.get('predicted_disease')
+        try:
+            disease = Disease.objects.get(name=predicted_disease_name)
+        except Disease.DoesNotExist:
+            print(f"❌ Disease not found: {predicted_disease_name}")
+            return JsonResponse({'status': 'error', 'message': f'Disease \"{predicted_disease_name}\" not found.'}, status=400)
+
+        try:
+            diagnosis = Diagnosis(
+                user=request.user,  # ✅ Assign the current authenticated user
+                crop_image=request.FILES.get('crop_image'),
+                predicted_disease=disease,
+                confidence_score=request.POST.get('confidence_score'),
+                treatment=request.POST.get('treatment'),
+                prevention=request.POST.get('prevention'),
+                crop_type=request.POST.get('crop_type') or None,
+                temperature=request.POST.get('temperature') or None,
+                humidity=request.POST.get('humidity') or None,
+                soil_ph=request.POST.get('soil_ph') or None,
+                notes=request.POST.get('notes'),
+                status='completed',
+            )
+            diagnosis.save()
+            print("✅ Diagnosis saved successfully")
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            print(f"❌ Exception occurred while saving diagnosis:\n{e}")
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
+
+def diagnosis_history(request):
+    search_query = request.GET.get('search', '')
+    status_filter = request.GET.get('status', '')
+
+    diagnoses = Diagnosis.objects.all()
+
+    if search_query:
+        diagnoses = diagnoses.filter(
+            Q(predicted_disease__name__icontains=search_query) |
+            Q(crop_type__icontains=search_query)
+        )
+    if status_filter:
+        diagnoses = diagnoses.filter(status=status_filter)
+
+    paginator = Paginator(diagnoses.order_by('-created_at'), 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'crops/diagnosis_history.html', {
+        'page_obj': page_obj,
+        'search_query': search_query,
+        'status_filter': status_filter
+    })
+
+

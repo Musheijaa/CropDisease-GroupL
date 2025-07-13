@@ -2,7 +2,8 @@
 venv/
 
 # ML model
-project/ml_models/trained_cnn_model.keras
+project/ml_models/trained_cnn_model.keras/
+project/media/crop_images/*
 
 # Other common ignores (optional but recommended)
 __pycache__/

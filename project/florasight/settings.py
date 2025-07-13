@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from decouple import config
+import sys
+sys.path.append('/home/musheija-abaham/Desktop/CropDisease-GroupL/project')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -106,3 +108,17 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Email configuration (for password reset)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
