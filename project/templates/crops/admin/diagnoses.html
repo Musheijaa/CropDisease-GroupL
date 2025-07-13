@@ -298,12 +298,12 @@
                         <tr>
                             <th>Image</th>
                             <th>User</th>
-                            <th>Crop Type</th>
+                           
                             <th>Disease</th>
                             <th>Confidence</th>
                             <th>Status</th>
                             <th>Date</th>
-                            <th>Actions</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -319,13 +319,7 @@
                                 <small class="text-muted">{{ diagnosis.user.userprofile.get_user_type_display }}</small>
                                 {% endif %}
                             </td>
-                            <td>
-                                {% if diagnosis.crop_type %}
-                                    <span class="badge bg-primary">{{ diagnosis.crop_type.name }}</span>
-                                {% else %}
-                                    <span class="text-muted">Unknown</span>
-                                {% endif %}
-                            </td>
+                           
                             <td>
                                 {% if diagnosis.predicted_disease %}
                                     <span class="badge bg-danger">{{ diagnosis.predicted_disease.name }}</span>
@@ -351,18 +345,7 @@
                                 </span>
                             </td>
                             <td>{{ diagnosis.created_at|date:"M d, Y H:i" }}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="{% url 'crops:diagnosis_detail' diagnosis.id %}" 
-                                       class="btn btn-outline-primary" title="View Details" target="_blank">
-                                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/eye.svg" style="width: 16px; height: 16px;" alt="View Icon">
-                                    </a>
-                                    <a href="/admin/crops/diagnosis/{{ diagnosis.id }}/change/" 
-                                       class="btn btn-outline-secondary" title="Edit" target="_blank">
-                                        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/pencil.svg" style="width: 16px; height: 16px;" alt="Edit Icon">
-                                    </a>
-                                </div>
-                            </td>
+                           
                         </tr>
                         {% endfor %}
                     </tbody>
