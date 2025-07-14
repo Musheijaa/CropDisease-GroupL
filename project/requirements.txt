@@ -1,6 +1,6 @@
-Django==4.2.7
-Pillow==10.1.0
-python-decouple==3.8
+django
+pillow
+python-decouple
 tensorflow
 # from django.shortcuts import render
 # from .models import Diagnosis, User, UserProfile, Message
