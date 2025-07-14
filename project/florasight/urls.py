@@ -8,7 +8,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('crops.urls')),
     path('auth/', include('django.contrib.auth.urls')),
-     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('chatbot/', include('chatbot.urls')),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 if settings.DEBUG:
