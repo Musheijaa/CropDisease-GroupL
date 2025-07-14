@@ -3,7 +3,10 @@ venv/
 
 # ML model
 project/ml_models/trained_cnn_model.keras/
-project/media/crop_images/*
+project/media/crop_images/
+project/florasight/__pycache__/
+project/crops/__pycache__/
+project/db.sqlite3
 
 # Other common ignores (optional but recommended)
 __pycache__/
@@ -12,63 +15,3 @@ __pycache__/
 .DS_Store
 .envvenv/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-project/db.sqlite3
