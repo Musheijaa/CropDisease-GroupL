@@ -1,0 +1,74 @@
+Agricure Requirements Specification
+
+Functional Requirements (FR)
+Functional requirements describe what the system should do — the features and services it must provide.
+
+User Management
+FR1: The system shall allow users (farmers, agronomists, extension workers) to register and create personal accounts.
+
+FR2: The system shall authenticate users through a secure login system.
+
+FR3: The system shall allow users to reset their passwords.
+
+Image Upload and Disease Diagnosis
+FR4: The system shall enable users to upload images of affected crops web applications.
+
+FR5: The system shall process the uploaded image using a trained AI/ML model to detect and classify crop diseases.
+
+FR6: The system shall display the diagnosis results to the user, including disease name, severity, and affected plant part.
+
+Recommendation and Advisory System
+FR7: The system shall generate data-driven recommendations for disease management and treatment based on diagnosis results.
+
+FR8: The system shall integrate environmental data (e.g., temperature, humidity, soil type) to enhance the accuracy of recommendations.
+
+FR9: The system shall notify users of preventive measures for common regional diseases based on predicted environmental risks.
+
+Historical Data and Analytics
+FR10: The system shall maintain a history of users’ crop diagnoses and recommendations.
+
+FR11: The system shall visualize trends and analytics for farmers, indicating disease patterns and management outcomes over time.
+
+IoT Integration
+FR12: The system shall collect environmental data from connected IoT devices (e.g., soil moisture, temperature sensors).
+
+FR13: The system shall use real-time IoT data to support disease prediction and advisory recommendations.
+
+Admin and Model Management
+FR14: The system shall allow administrators to manage users, reported issues, and system content.
+
+FR15: The system shall enable administrators to update and retrain AI models with new image datasets.
+
+Non-Functional Requirements (NFR)
+Non-functional requirements describe how the system performs — its qualities and operational constraints.
+
+Performance Requirements
+NFR1: The system shall process disease detection and generate recommendations within 10 seconds of image upload.
+
+NFR2: The system shall support at least 1,000 concurrent users without performance degradation.
+
+Security Requirements
+NFR3: The system shall ensure secure user authentication using hashed passwords and secure session management.
+
+NFR4: The system shall encrypt sensitive data transmissions using HTTPS/SSL protocols.
+
+NFR5: The system shall protect AI model access and administrative controls via role-based access control (RBAC).
+
+Usability Requirements
+NFR6: The system shall offer a user-friendly, multilingual interface tailored for farmers with limited digital literacy.
+
+NFR7: The mobile application shall be compatible with Android versions 8.0 and above.
+
+Reliability and Availability
+NFR8: The system shall maintain 99.5% uptime.
+
+NFR9: The system shall provide an offline mode for diagnosis history access when network coverage is unavailable.
+
+Scalability Requirements
+NFR10: The system shall be scalable to accommodate future integration of additional crop types, regions, and IoT devices.
+
+Maintainability
+NFR11: The system’s AI models and datasets shall be updatable without requiring system downtime.
+
+Compliance
+NFR12: The system shall comply with data protection regulations (e.g., GDPR or applicable national laws) to safeguard user and farm data.

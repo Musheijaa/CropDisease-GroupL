@@ -1,0 +1,234 @@
+2025-07-09 12:53:18,706 - INFO - No GPU detected, using CPU.
+2025-07-09 12:53:18,706 - INFO - Starting main execution
+2025-07-09 12:53:18,706 - INFO - Starting dataset exploration...
+2025-07-09 12:53:26,005 - INFO - Training Dataset Class Distribution:
+2025-07-09 12:53:26,007 - INFO -                                                  Class  Count
+0                         Tomato___Tomato_mosaic_virus   1790
+1                                 Tomato___Target_Spot   1827
+2                          Corn_(maize)___Common_rust_   1907
+3                        Pepper,_bell___Bacterial_spot   1913
+4                                 Strawberry___healthy   1824
+5                             Strawberry___Leaf_scorch   1774
+6                                Tomato___Early_blight   1920
+7                                 Tomato___Late_blight   1851
+8                                     Tomato___healthy   1926
+9               Tomato___Tomato_Yellow_Leaf_Curl_Virus   1961
+10                                   Grape___Black_rot   1888
+11                                     Grape___healthy   1692
+12                              Peach___Bacterial_spot   1838
+13                                Potato___Late_blight   1939
+14                                   Apple___Black_rot   1987
+15          Grape___Leaf_blight_(Isariopsis_Leaf_Spot)   1722
+16  Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot   1642
+17                                   Soybean___healthy   2022
+18                 Corn_(maize)___Northern_Leaf_Blight   1908
+19       Tomato___Spider_mites Two-spotted_spider_mite   1741
+20                        Grape___Esca_(Black_Measles)   1920
+21                         Tomato___Septoria_leaf_spot   1745
+22                                     Apple___healthy   2008
+23                                  Tomato___Leaf_Mold   1882
+24            Cherry_(including_sour)___Powdery_mildew   1683
+25                             Tomato___Bacterial_spot   1702
+26                                    Potato___healthy   1824
+27                            Apple___Cedar_apple_rust   1760
+28                   Cherry_(including_sour)___healthy   1826
+29                                 Blueberry___healthy   1816
+30                                     Peach___healthy   1728
+31                                  Apple___Apple_scab   2016
+32                               Potato___Early_blight   1939
+33                              Pepper,_bell___healthy   1988
+34                             Squash___Powdery_mildew   1736
+35                              Corn_(maize)___healthy   1859
+36                                 Raspberry___healthy   1781
+37            Orange___Haunglongbing_(Citrus_greening)   2010
+2025-07-09 12:53:26,154 - INFO - Chromium init'ed with kwargs {}
+2025-07-09 12:53:26,155 - INFO - Found chromium path: /usr/bin/google-chrome
+2025-07-09 12:53:26,155 - INFO - Temp directory created: /tmp/tmpi03ztm_f.
+2025-07-09 12:53:26,155 - INFO - Opening browser.
+2025-07-09 12:53:26,156 - INFO - Temp directory created: /tmp/tmppoh7n15g.
+2025-07-09 12:53:26,162 - INFO - ldd failed. e: Command '['ldd', '/usr/bin/google-chrome']' returned non-zero exit status 1., stderr: None
+2025-07-09 12:53:26,162 - INFO - Temporary directory at: /tmp/tmppoh7n15g
+2025-07-09 12:53:26,374 - INFO - Conforming 1 to file:///tmp/tmpi03ztm_f/index.html
+2025-07-09 12:53:26,374 - INFO - Waiting on all navigates
+2025-07-09 12:53:28,115 - INFO - All navigates done, putting them all in queue.
+2025-07-09 12:53:28,119 - INFO - Getting tab from queue (has 1)
+2025-07-09 12:53:28,119 - INFO - Got 8616
+2025-07-09 12:53:28,119 - INFO - Processing Class_Distribution_in_Training_Set.png
+2025-07-09 12:53:28,119 - INFO - Sending big command for Class_Distribution_in_Training_Set.png.
+2025-07-09 12:53:28,262 - INFO - Sent big command for Class_Distribution_in_Training_Set.png.
+2025-07-09 12:53:28,263 - INFO - Reloading tab 8616 before return.
+2025-07-09 12:53:28,353 - INFO - Putting tab 8616 back (queue size: 0).
+2025-07-09 12:53:28,353 - INFO - Waiting for all cleanups to finish.
+2025-07-09 12:53:28,353 - INFO - Exiting Kaleido
+2025-07-09 12:53:28,353 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-09 12:53:28,353 - INFO - shutil.rmtree worked.
+2025-07-09 12:53:28,353 - INFO - Cancelling tasks.
+2025-07-09 12:53:28,353 - INFO - Exiting Kaleido/Choreo
+2025-07-09 12:53:28,353 - INFO - Closing browser.
+2025-07-09 12:53:28,357 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-09 12:53:28,357 - INFO - shutil.rmtree worked.
+2025-07-09 12:53:28,357 - INFO - Cancelling tasks.
+2025-07-09 12:53:28,357 - INFO - Exiting Kaleido/Choreo
+2025-07-09 12:53:28,357 - INFO - Closing browser.
+2025-07-09 12:53:28,474 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-09 12:53:28,474 - INFO - shutil.rmtree worked.
+2025-07-09 12:53:28,477 - INFO - Saved class distribution plot as class_distribution.png
+2025-07-09 12:53:28,477 - INFO - Corrupted or invalid files: 0
+2025-07-09 12:53:28,478 - INFO - Number of classes in validation set: 38
+2025-07-09 12:53:28,478 - INFO - Number of test images: 33
+2025-07-09 12:53:29,560 - WARNING - Test generator classes do not match training classes
+2025-07-09 12:53:29,560 - INFO - Saved class indices as class_indices.txt
+2025-07-09 12:53:29,671 - INFO - CNN model built successfully
+2025-07-09 12:53:29,675 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-09 12:53:29,675 - INFO - shutil.rmtree worked.
+2025-07-09 12:53:29,697 - INFO - Computed class weights for training
+2025-07-09 13:35:45,648 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 15:02:56,861 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 15:42:26,219 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 16:21:56,886 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 17:01:25,937 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 18:59:50,787 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 20:40:14,312 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-09 23:23:21,760 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-10 00:03:14,297 - WARNING - You are saving your model as an HDF5 file via `model.save()` or `keras.saving.save_model(model)`. This file format is considered legacy. We recommend using instead the native Keras format, e.g. `model.save('my_model.keras')` or `keras.saving.save_model(model, 'my_model.keras')`. 
+2025-07-10 00:03:14,419 - INFO - Model saved as trained_cnn_model.h5
+2025-07-10 00:03:14,421 - ERROR - Model evaluation failed: The PyDataset has length 0
+2025-07-10 00:03:14,421 - ERROR - Main execution failed: The PyDataset has length 0
+2025-07-10 08:06:13,118 - INFO - No GPU detected, using CPU.
+2025-07-10 08:06:13,121 - INFO - Starting main execution
+2025-07-10 08:06:13,121 - INFO - Starting dataset exploration...
+2025-07-10 08:06:24,384 - INFO - Training Dataset Class Distribution:
+2025-07-10 08:06:24,386 - INFO -                                                  Class  Count
+0                         Tomato___Tomato_mosaic_virus   1790
+1                                 Tomato___Target_Spot   1827
+2                          Corn_(maize)___Common_rust_   1907
+3                        Pepper,_bell___Bacterial_spot   1913
+4                                 Strawberry___healthy   1824
+5                             Strawberry___Leaf_scorch   1774
+6                                Tomato___Early_blight   1920
+7                                 Tomato___Late_blight   1851
+8                                     Tomato___healthy   1926
+9               Tomato___Tomato_Yellow_Leaf_Curl_Virus   1961
+10                                   Grape___Black_rot   1888
+11                                     Grape___healthy   1692
+12                              Peach___Bacterial_spot   1838
+13                                Potato___Late_blight   1939
+14                                   Apple___Black_rot   1987
+15          Grape___Leaf_blight_(Isariopsis_Leaf_Spot)   1722
+16  Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot   1642
+17                                   Soybean___healthy   2022
+18                 Corn_(maize)___Northern_Leaf_Blight   1908
+19       Tomato___Spider_mites Two-spotted_spider_mite   1741
+20                        Grape___Esca_(Black_Measles)   1920
+21                         Tomato___Septoria_leaf_spot   1745
+22                                     Apple___healthy   2008
+23                                  Tomato___Leaf_Mold   1882
+24            Cherry_(including_sour)___Powdery_mildew   1683
+25                             Tomato___Bacterial_spot   1702
+26                                    Potato___healthy   1824
+27                            Apple___Cedar_apple_rust   1760
+28                   Cherry_(including_sour)___healthy   1826
+29                                 Blueberry___healthy   1816
+30                                     Peach___healthy   1728
+31                                  Apple___Apple_scab   2016
+32                               Potato___Early_blight   1939
+33                              Pepper,_bell___healthy   1988
+34                             Squash___Powdery_mildew   1736
+35                              Corn_(maize)___healthy   1859
+36                                 Raspberry___healthy   1781
+37            Orange___Haunglongbing_(Citrus_greening)   2010
+2025-07-10 08:06:24,532 - INFO - Chromium init'ed with kwargs {}
+2025-07-10 08:06:24,532 - INFO - Found chromium path: /usr/bin/google-chrome
+2025-07-10 08:06:24,532 - INFO - Temp directory created: /tmp/tmpnekmippg.
+2025-07-10 08:06:24,533 - INFO - Opening browser.
+2025-07-10 08:06:24,533 - INFO - Temp directory created: /tmp/tmp6i9fa790.
+2025-07-10 08:06:24,539 - INFO - ldd failed. e: Command '['ldd', '/usr/bin/google-chrome']' returned non-zero exit status 1., stderr: None
+2025-07-10 08:06:24,539 - INFO - Temporary directory at: /tmp/tmp6i9fa790
+2025-07-10 08:06:24,781 - INFO - Conforming 1 to file:///tmp/tmpnekmippg/index.html
+2025-07-10 08:06:24,781 - INFO - Waiting on all navigates
+2025-07-10 08:06:26,388 - INFO - All navigates done, putting them all in queue.
+2025-07-10 08:06:26,390 - INFO - Getting tab from queue (has 1)
+2025-07-10 08:06:26,390 - INFO - Got 6969
+2025-07-10 08:06:26,390 - INFO - Processing Class_Distribution_in_Training_Set.png
+2025-07-10 08:06:26,390 - INFO - Sending big command for Class_Distribution_in_Training_Set.png.
+2025-07-10 08:06:26,587 - INFO - Sent big command for Class_Distribution_in_Training_Set.png.
+2025-07-10 08:06:26,588 - INFO - Reloading tab 6969 before return.
+2025-07-10 08:06:27,034 - INFO - Putting tab 6969 back (queue size: 0).
+2025-07-10 08:06:27,034 - INFO - Waiting for all cleanups to finish.
+2025-07-10 08:06:27,034 - INFO - Exiting Kaleido
+2025-07-10 08:06:27,034 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-10 08:06:27,034 - INFO - shutil.rmtree worked.
+2025-07-10 08:06:27,034 - INFO - Cancelling tasks.
+2025-07-10 08:06:27,034 - INFO - Exiting Kaleido/Choreo
+2025-07-10 08:06:27,035 - INFO - Closing browser.
+2025-07-10 08:06:27,035 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-10 08:06:27,035 - INFO - shutil.rmtree worked.
+2025-07-10 08:06:27,035 - INFO - Cancelling tasks.
+2025-07-10 08:06:27,035 - INFO - Exiting Kaleido/Choreo
+2025-07-10 08:06:27,035 - INFO - Closing browser.
+2025-07-10 08:06:27,102 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-10 08:06:27,102 - INFO - shutil.rmtree worked.
+2025-07-10 08:06:27,103 - INFO - Saved class distribution plot as class_distribution.png
+2025-07-10 08:06:27,103 - INFO - Corrupted or invalid files: 0
+2025-07-10 08:06:27,103 - INFO - Number of classes in validation set: 38
+2025-07-10 08:06:27,103 - INFO - Number of classes in test set: 0
+2025-07-10 08:06:27,103 - INFO - Number of test images: 33
+2025-07-10 08:06:28,258 - WARNING - No classes found in test generator. Using validation set for evaluation.
+2025-07-10 08:06:28,258 - INFO - Saved class indices as class_indices.txt
+2025-07-10 08:06:28,382 - INFO - CNN model built successfully
+2025-07-10 08:06:28,386 - INFO - TemporaryDirectory.cleanup() worked.
+2025-07-10 08:06:28,386 - INFO - shutil.rmtree worked.
+2025-07-10 08:06:28,409 - INFO - Computed class weights for training
+2025-07-10 18:14:05,255 - INFO - Model saved as trained_cnn_model.keras
+2025-07-10 18:15:33,355 - INFO - Test Loss: 0.2587, Test Accuracy: 0.9215
+2025-07-10 18:17:02,056 - INFO - 
+Classification Report:
+2025-07-10 18:17:02,135 - INFO -                                                     precision    recall  f1-score   support
+
+                                Apple___Apple_scab       0.03      0.03      0.03       504
+                                 Apple___Black_rot       0.02      0.02      0.02       497
+                          Apple___Cedar_apple_rust       0.02      0.02      0.02       440
+                                   Apple___healthy       0.02      0.02      0.02       502
+                               Blueberry___healthy       0.04      0.04      0.04       454
+          Cherry_(including_sour)___Powdery_mildew       0.02      0.02      0.02       421
+                 Cherry_(including_sour)___healthy       0.02      0.03      0.02       456
+Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot       0.01      0.01      0.01       410
+                       Corn_(maize)___Common_rust_       0.03      0.03      0.03       477
+               Corn_(maize)___Northern_Leaf_Blight       0.02      0.03      0.02       477
+                            Corn_(maize)___healthy       0.01      0.02      0.01       465
+                                 Grape___Black_rot       0.03      0.03      0.03       472
+                      Grape___Esca_(Black_Measles)       0.03      0.03      0.03       480
+        Grape___Leaf_blight_(Isariopsis_Leaf_Spot)       0.02      0.02      0.02       430
+                                   Grape___healthy       0.03      0.04      0.03       423
+          Orange___Haunglongbing_(Citrus_greening)       0.03      0.03      0.03       503
+                            Peach___Bacterial_spot       0.02      0.02      0.02       459
+                                   Peach___healthy       0.03      0.03      0.03       432
+                     Pepper,_bell___Bacterial_spot       0.03      0.03      0.03       478
+                            Pepper,_bell___healthy       0.02      0.02      0.02       497
+                             Potato___Early_blight       0.03      0.03      0.03       485
+                              Potato___Late_blight       0.02      0.02      0.02       485
+                                  Potato___healthy       0.04      0.04      0.04       456
+                               Raspberry___healthy       0.03      0.03      0.03       445
+                                 Soybean___healthy       0.03      0.02      0.03       505
+                           Squash___Powdery_mildew       0.03      0.03      0.03       434
+                          Strawberry___Leaf_scorch       0.02      0.02      0.02       444
+                              Strawberry___healthy       0.02      0.02      0.02       456
+                           Tomato___Bacterial_spot       0.03      0.03      0.03       425
+                             Tomato___Early_blight       0.01      0.01      0.01       480
+                              Tomato___Late_blight       0.01      0.01      0.01       463
+                                Tomato___Leaf_Mold       0.03      0.03      0.03       470
+                       Tomato___Septoria_leaf_spot       0.03      0.03      0.03       436
+     Tomato___Spider_mites Two-spotted_spider_mite       0.02      0.02      0.02       435
+                              Tomato___Target_Spot       0.02      0.02      0.02       457
+            Tomato___Tomato_Yellow_Leaf_Curl_Virus       0.02      0.02      0.02       490
+                      Tomato___Tomato_mosaic_virus       0.03      0.03      0.03       448
+                                  Tomato___healthy       0.02      0.02      0.02       481
+
+                                          accuracy                           0.02     17572
+                                         macro avg       0.02      0.02      0.02     17572
+                                      weighted avg       0.02      0.02      0.02     17572
+
+2025-07-10 18:17:05,081 - INFO - Saved confusion matrix as confusion_matrix.png
+2025-07-10 18:17:05,236 - INFO - Saved training history as training_history.png
+2025-07-10 18:17:05,236 - INFO - Model training complete. Saved as 'trained_cnn_model.keras' and 'best_model.keras'
+2025-07-10 18:17:05,236 - INFO - Class indices saved as 'class_indices.txt' for Django integration
