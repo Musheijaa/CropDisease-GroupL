@@ -23,3 +23,5 @@ ml_models/
 # Media (optional, depending on your use case)
 media/
 project/staticfiles/
+
+.gitignore
