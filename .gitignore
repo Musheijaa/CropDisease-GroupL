@@ -1,27 +1,78 @@
-# Python cache
+# ====================
+# Python
+# ====================
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+*.so
 
-# Environments
+# Bytecode and cache
+*.log
+*.pot
+*.mo
+
+# ====================
+# Virtual Environments
+# ====================
 .venv/
 venv/
+env/
+ENV/
+chatbot_backend/venv/
+
+# ====================
+# Environment Variables
+# ====================
 .env
 *.env
+project/.env
 
-# Django DB (development only)
+# ====================
+# Django
+# ====================
 *.sqlite3
+db.sqlite3
+media/
+staticfiles/              # if you're using collectstatic
+project/staticfiles/      # adjust path if needed
+*.log
+local_settings.py         # in case you split sensitive settings
 
-# Node
-node_modules/
+# ====================
+# SSL Dev Certificates
+# ====================
+project/cert.pem
+project/key.pem
 
-# Compiled or heavy files
+# ====================
+# Machine Learning Files
+# ====================
 *.h5
 *.keras
 *.json
+*.pth
+*.pkl
 ml_models/
 
-# Media (optional, depending on your use case)
-media/
-project/staticfiles/
+# ====================
+# Node.js (if applicable)
+# ====================
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
 
-.gitignore
+# ====================
+# Editors / IDEs
+# ====================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ====================
+# OS-specific
+# ====================
+.DS_Store
+Thumbs.db

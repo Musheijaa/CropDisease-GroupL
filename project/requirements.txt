@@ -1,8 +1,8 @@
-Django==4.2.7
-Pillow==10.1.0
-python-decouple==3.8
+django
+pillow
+python-decouple
 tensorflow
-fastapi
-langchain_core
-langchain_groq
 dotenv
+psycopg2-binary
+django-extensions
+pyOpenSSL
