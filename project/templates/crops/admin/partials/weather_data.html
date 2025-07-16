@@ -1,0 +1,73 @@
+<!-- Current Weather Cards -->
+<div class="row mb-4">
+    {% for data in weather_data %}
+    <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>{{ data.current.location }}
+                    <small class="text-muted ms-2">{{ data.current.timestamp|date:"H:i" }}</small>
+                </h6>
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'crops:admin_edit_weather_location' data.id %}">Edit</a></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'crops:admin_delete_weather_location' data.id %}">Remove</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row align-items-center mb-3">
+                <div class="col-6">
+                    <div class="weather-temp">
+                        <span class="display-4 fw-bold text-primary">{{ data.current.temperature }}°</span>
+                        <div class="text-muted">Feels like {{ data.current.feels_like }}°C</div>
+                    </div>
+                </div>
+                <div class="col-6 text-center">
+                    <img src="http://openweathermap.org/img/wn/{{ data.current.icon }}@2x.png" 
+                         alt="{{ data.current.description }}" class="weather-icon">
+                    <div class="text-muted">{{ data.current.description }}</div>
+                </div>
+            </div>
+            
+            <div class="row text-center">
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-tint text-info"></i>
+                        <div class="fw-bold">{{ data.current.humidity }}%</div>
+                        <small class="text-muted">Humidity</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-wind text-success"></i>
+                        <div class="fw-bold">{{ data.current.wind_speed }} m/s</div>
+                        <small class="text-muted">Wind</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-thermometer-half text-warning"></i>
+                        <div class="fw-bold">{{ data.current.pressure }} hPa</div>
+                        <small class="text-muted">Pressure</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="chart-container text-center py-5">
+            <i class="fas fa-cloud fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Weather Locations</h5>
+            <p class="text-muted">Add weather monitoring locations to get started.</p>
+            <a href="{% url 'crops:admin_add_weather_location' %}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Add First Location
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,270 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Weather Dashboard - FloraSight Admin{% endblock %}
+{% block page_title %}Weather Dashboard{% endblock %}
+
+{% block content %}
+<!-- Add Location Button -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-cloud-sun me-2 text-primary"></i>Weather Monitoring
+            </h5>
+            <a href="{% url 'crops:admin_add_weather_location' %}" class="btn btn-success">
+                <i class="fas fa-map-marker-alt me-2"></i>Add Location
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Current Weather Cards -->
+<div class="row mb-4">
+    {% for data in weather_data %}
+    <div class="col-lg-6 col-xl-4 mb-4">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>{{ data.current.location }}
+                </h6>
+                <small class="text-muted">{{ data.current.timestamp|date:"H:i" }}</small>
+            </div>
+            
+            <div class="row align-items-center mb-3">
+                <div class="col-6">
+                    <div class="weather-temp">
+                        <span class="display-4 fw-bold text-primary">{{ data.current.temperature }}°</span>
+                        <div class="text-muted">Feels like {{ data.current.feels_like }}°C</div>
+                    </div>
+                </div>
+                <div class="col-6 text-center">
+                    <img src="http://openweathermap.org/img/wn/{{ data.current.icon }}@2x.png" 
+                         alt="{{ data.current.description }}" class="weather-icon">
+                    <div class="text-muted">{{ data.current.description }}</div>
+                </div>
+            </div>
+            
+            <div class="row text-center">
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-tint text-info"></i>
+                        <div class="fw-bold">{{ data.current.humidity }}%</div>
+                        <small class="text-muted">Humidity</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-wind text-success"></i>
+                        <div class="fw-bold">{{ data.current.wind_speed }} m/s</div>
+                        <small class="text-muted">Wind</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="weather-stat">
+                        <i class="fas fa-thermometer-half text-warning"></i>
+                        <div class="fw-bold">{{ data.current.pressure }} hPa</div>
+                        <small class="text-muted">Pressure</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row text-center mt-3">
+                <div class="col-6">
+                    <small class="text-muted">
+                        <i class="fas fa-sunrise"></i> {{ data.current.sunrise|date:"H:i" }}
+                    </small>
+                </div>
+                <div class="col-6">
+                    <small class="text-muted">
+                        <i class="fas fa-sunset"></i> {{ data.current.sunset|date:"H:i" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="chart-container text-center py-5">
+            <i class="fas fa-cloud fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">No Weather Locations</h5>
+            <p class="text-muted">Add weather monitoring locations to get started.</p>
+            <a href="{% url 'crops:admin_add_weather_location' %}" class="btn btn-success">
+                <i class="fas fa-plus me-2"></i>Add First Location
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Agricultural Advice -->
+{% if weather_data %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-lightbulb me-2 text-warning"></i>Agricultural Advice
+            </h5>
+            
+            <div class="row">
+                {% for data in weather_data %}
+                    {% if data.advice %}
+                    <div class="col-lg-6 mb-3">
+                        <h6 class="text-primary">{{ data.current.location }}</h6>
+                        {% for advice in data.advice %}
+                        <div class="alert alert-{{ advice.type }} alert-sm">
+                            <div class="d-flex align-items-start">
+                                <i class="{{ advice.icon }} me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-1">{{ advice.title }}</h6>
+                                    <p class="mb-0 small">{{ advice.message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Weather Forecast -->
+{% for data in weather_data %}
+{% if data.forecast %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-calendar-alt me-2 text-info"></i>5-Day Forecast - {{ data.current.location }}
+            </h5>
+            
+            <div class="row">
+                {% for day in data.forecast %}
+                <div class="col-lg-2 col-md-4 col-6 mb-3">
+                    <div class="forecast-card text-center">
+                        <div class="fw-bold text-primary">{{ day.date|date:"M d" }}</div>
+                        <div class="text-muted small">{{ day.date|date:"D" }}</div>
+                        
+                        <img src="http://openweathermap.org/img/wn/{{ day.icon }}.png" 
+                             alt="{{ day.description }}" class="forecast-icon my-2">
+                        
+                        <div class="forecast-temps">
+                            <span class="fw-bold">{{ day.temp_max }}°</span>
+                            <span class="text-muted">{{ day.temp_min }}°</span>
+                        </div>
+                        
+                        <div class="small text-muted">{{ day.description }}</div>
+                        
+                        {% if day.precipitation > 0 %}
+                        <div class="small text-info">
+                            <i class="fas fa-cloud-rain"></i> {{ day.precipitation }}mm
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+
+<!-- Broadcast Weather Message -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-bullhorn me-2 text-success"></i>Send Weather Alert to Farmers
+            </h5>
+            
+            <form method="post" action="{% url 'crops:admin_send_broadcast' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="weather_message_title" class="form-label fw-bold">Alert Title</label>
+                        <input type="text" class="form-control" id="weather_message_title" name="title" 
+                               placeholder="e.g., Heavy Rain Expected This Week">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="weather_message_type" class="form-label fw-bold">Alert Type</label>
+                        <select class="form-control" id="weather_message_type" name="message_type">
+                            <option value="info">Weather Information</option>
+                            <option value="warning">Weather Warning</option>
+                            <option value="success">Good Weather News</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="weather_message" class="form-label fw-bold">Message</label>
+                    <textarea class="form-control" id="weather_message" name="message" rows="3" 
+                              placeholder="Inform farmers about weather conditions and recommended actions..."></textarea>
+                </div>
+                
+                <input type="hidden" name="target_audience" value="farmer">
+                
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane me-2"></i>Send Weather Alert to All Farmers
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.weather-icon {
+    width: 64px;
+    height: 64px;
+}
+
+.forecast-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.forecast-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s ease;
+}
+
+.forecast-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.forecast-temps {
+    margin: 8px 0;
+}
+
+.forecast-temps .fw-bold {
+    font-size: 1.1rem;
+    margin-right: 8px;
+}
+
+.weather-stat {
+    padding: 8px 0;
+}
+
+.weather-stat i {
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+
+.alert-sm {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+}
+
+.alert-sm .alert-heading {
+    font-size: 0.9rem;
+}
+</style>
+{% endblock %}

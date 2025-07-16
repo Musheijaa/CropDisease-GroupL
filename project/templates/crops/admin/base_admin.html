@@ -128,36 +128,22 @@
             color: white;
             border-color: var(--light-green);
         }
+.dropdown {
+    position: relative;
+    z-index: 1055; /* Make sure it's above other components */
+}
 
-        .dropdown-toggle {
-            border-color: #e0e0e0;
-            color: var(--text-black);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
+.dropdown-menu {
+    position: absolute;
+    z-index: 1060 !important; /* Higher than .dashboard-header which uses 1000+ shadows */
+    top: 100%; /* Ensure it opens below the toggle */
+    left: auto;
+    right: 0;  /* Align to right for profile dropdowns */
+    margin-top: 0.5rem;
+    background-color: white;
+    overflow: visible;
+}
 
-        .dropdown-toggle:hover {
-            background: var(--light-green);
-            color: white;
-            border-color: var(--light-green);
-        }
-
-        .dropdown-menu {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .dropdown-item {
-            color: var(--text-black);
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .dropdown-item:hover {
-            background: var(--light-green);
-            color: white;
-        }
 
         /* Alerts */
         .alert {
@@ -244,11 +230,18 @@
                         <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/megaphone.svg" alt="Broadcast Icon"> Send Broadcast
                     </a>
                 </li>
+                  <li class="nav-item">
+    <a class="nav-link {% if 'weather' in request.resolver_match.url_name %}active{% endif %}" 
+       href="{% url 'crops:admin_weather' %}">
+        <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/cloud.svg" alt="Weather Icon"> Weather
+    </a>
+</li>
                 <li class="nav-item mt-4">
                     <a class="nav-link" href="{% url 'crops:home' %}">
                         <img src="https://cdn.jsdelivr.net/npm/heroicons@2.0.13/24/outline/arrow-left.svg" alt="Back Icon"> Back to Site
                     </a>
                 </li>
+                
             </ul>
         </nav>
     </div>

@@ -25,6 +25,12 @@ from django.http import JsonResponse
 
 from django.conf import settings
 from .services.ml_service import get_predictor, DiseasePredictor
+from django.views.decorators.http import require_GET
+from django.db.models import Count, Avg
+from django.db.models.functions import TruncMonth
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 def home(request):
     features = [
         {'icon': 'brain', 'title': 'Advanced AI Detection', 'desc': 'Our AI model analyzes crop images with 99% accuracy...'},
@@ -201,47 +207,41 @@ def profile(request):
 
 # Admin Panel Views
 
+
+
 @staff_member_required
 def admin_panel(request):
-    """Enhanced admin dashboard with comprehensive system overview and analytics"""
-    # Get statistics
+    """Enhanced admin dashboard with accurate user statistics and comprehensive system overview"""
+    # User statistics
     total_users = User.objects.count()
-    active_users = User.objects.filter(last_login__gte=timezone.now() - timedelta(days=30)).count()
+    # Active users: logged in within last 30 days or have recent diagnoses
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    active_users = User.objects.filter(
+        Q(last_login__gte=thirty_days_ago) |
+        Q(diagnosis__created_at__gte=thirty_days_ago)
+    ).distinct().count()
+    
+    # Diagnosis statistics
     total_diagnoses = Diagnosis.objects.count()
     completed_diagnoses = Diagnosis.objects.filter(status='completed').count()
     disease_types = Disease.objects.count()
     pending_messages = SystemMessage.objects.filter(user__isnull=True, is_read=False).count()
     
     # Recent activity
-    recent_users = User.objects.order_by('-date_joined')[:5]
-    recent_diagnoses = Diagnosis.objects.order_by('-created_at')[:5]
+    recent_users = User.objects.select_related('userprofile').order_by('-date_joined')[:5]
+    recent_diagnoses = Diagnosis.objects.select_related('user', 'crop_type', 'predicted_disease').order_by('-created_at')[:5]
     recent_user_messages = SystemMessage.objects.filter(user__isnull=True).order_by('-created_at')[:5]
     
-    # User growth data (last 6 months)
-    user_growth_data = []
-    for i in range(6):
-        date = timezone.now() - timedelta(days=30*i)
-        users_count = User.objects.filter(date_joined__lte=date).count()
-        user_growth_data.append({
-            'month': date.strftime('%b'),
-            'total_users': users_count,
-            'active_users': User.objects.filter(
-                date_joined__lte=date,
-                last_login__gte=date - timedelta(days=30)
-            ).count()
-        })
-    user_growth_data.reverse()
-    
-    # Disease distribution
-    disease_stats = Diagnosis.objects.filter(
+    # Disease distribution (top 5)
+    disease_stats = list(Diagnosis.objects.filter(
         predicted_disease__isnull=False
     ).values(
         'predicted_disease__name'
     ).annotate(
         count=Count('id')
-    ).order_by('-count')[:5]
+    ).order_by('-count')[:5])
     
-    # Monthly diagnosis trends
+    # Monthly diagnosis trends (last 12 months)
     monthly_diagnoses = []
     for i in range(12):
         date = timezone.now() - timedelta(days=30*i)
@@ -250,15 +250,15 @@ def admin_panel(request):
             created_at__month=date.month
         ).count()
         monthly_diagnoses.append({
-            'month': date.strftime('%b %Y'),
+            'month': date.strftime('%Y-%m'),  # Format as YYYY-MM for JavaScript
             'count': count
         })
-    monthly_diagnoses.reverse()
+    monthly_diagnoses.reverse()  # Order from oldest to newest
     
     # User type distribution
-    user_type_stats = UserProfile.objects.values('user_type').annotate(
+    user_type_stats = list(UserProfile.objects.values('user_type').annotate(
         count=Count('id')
-    ).order_by('-count')
+    ).order_by('-count'))
     
     # Average confidence score
     avg_confidence = Diagnosis.objects.filter(confidence_score__isnull=False).aggregate(
@@ -266,23 +266,29 @@ def admin_panel(request):
     )['avg_confidence'] or 0
     
     context = {
+        # Basic stats
         'total_users': total_users,
         'active_users': active_users,
         'total_diagnoses': total_diagnoses,
         'completed_diagnoses': completed_diagnoses,
         'disease_types': disease_types,
         'pending_messages': pending_messages,
+        
+        # Recent activity
         'recent_users': recent_users,
         'recent_diagnoses': recent_diagnoses,
         'recent_user_messages': recent_user_messages,
-        'user_growth_data': user_growth_data,
-        'disease_stats': disease_stats,
-        'monthly_diagnoses': monthly_diagnoses,
-        'user_type_stats': user_type_stats,
-        'avg_confidence': round(avg_confidence, 1),
+        
+        # Chart data
+        'monthly_diagnoses': json.dumps(monthly_diagnoses, cls=DjangoJSONEncoder),
+        'disease_stats': json.dumps(disease_stats, cls=DjangoJSONEncoder),
+        'user_type_stats': json.dumps(user_type_stats, cls=DjangoJSONEncoder),
+        
+        # Calculated metrics
+        'avg_confidence': round(avg_confidence * 100, 1),  # Convert to percentage
+        'success_rate': round((completed_diagnoses / total_diagnoses * 100), 1) if total_diagnoses else 0,
     }
     return render(request, 'crops/admin/dashboard.html', context)
-
 @staff_member_required
 def admin_send_broadcast(request):
     """Allow admin to send broadcast messages to all users"""
@@ -651,7 +657,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-@csrf_exempt  # Remove this in production; use proper CSRF handling
+@csrf_exempt
 def save_diagnosis(request):
     if request.method == 'POST':
         print("Received save_diagnosis request with POST data:", request.POST)
@@ -665,13 +671,12 @@ def save_diagnosis(request):
             return JsonResponse({'status': 'error', 'message': f'Disease \"{predicted_disease_name}\" not found.'}, status=400)
 
         try:
+            # Save the Diagnosis object without treatment and prevention
             diagnosis = Diagnosis(
-                user=request.user,  # ✅ Assign the current authenticated user
+                user=request.user,
                 crop_image=request.FILES.get('crop_image'),
                 predicted_disease=disease,
                 confidence_score=request.POST.get('confidence_score'),
-                treatment=request.POST.get('treatment'),
-                prevention=request.POST.get('prevention'),
                 crop_type=request.POST.get('crop_type') or None,
                 temperature=request.POST.get('temperature') or None,
                 humidity=request.POST.get('humidity') or None,
@@ -681,6 +686,18 @@ def save_diagnosis(request):
             )
             diagnosis.save()
             print("✅ Diagnosis saved successfully")
+
+            # Save treatment and prevention in the Recommendation model
+            Recommendation.objects.create(
+                diagnosis=diagnosis,
+                treatment_plan=request.POST.get('treatment', ''),
+                preventive_measures=request.POST.get('prevention', ''),
+                follow_up_actions='',  # Add default or additional logic if needed
+                estimated_recovery_time='',  # Add default or additional logic if needed
+                cost_estimate=None  # Add default or additional logic if needed
+            )
+            print("✅ Recommendation saved successfully")
+
             return JsonResponse({'status': 'success'})
         except Exception as e:
             print(f"❌ Exception occurred while saving diagnosis:\n{e}")
@@ -711,5 +728,282 @@ def diagnosis_history(request):
         'search_query': search_query,
         'status_filter': status_filter
     })
+    
+# Import statement
+from .weather_services import get_weather_service
 
 
+# Model imports (weather-related models)
+from .models import WeatherLocation, WeatherData
+
+# Admin weather dashboard view
+@staff_member_required
+def admin_weather(request):
+    weather_service = get_weather_service()
+    locations = WeatherLocation.objects.filter(is_active=True)
+    weather_data = []
+    for location in locations:
+        current_weather = weather_service.get_current_weather(location.name, location.latitude, location.longitude)
+        forecast = weather_service.get_weather_forecast(location.name, location.latitude, location.longitude, days=5)
+        if current_weather:
+            advice = weather_service.get_agricultural_advice(current_weather, forecast)
+            weather_data.append({
+                'location': location,
+                'current': current_weather,
+                'forecast': forecast,
+                'advice': advice
+            })
+
+    # Dynamic stats
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    total_diagnoses = Diagnosis.objects.count()
+    completed_diagnoses = Diagnosis.objects.filter(status='completed').count()
+    disease_types = Diagnosis.objects.values('predicted_disease__name').distinct().count()
+    pending_messages = 0  # Placeholder; implement message model if needed
+    monthly_diagnoses = Diagnosis.objects.extra({'month': "date_trunc('month', created_at)"}).values('month').annotate(count=Count('id')).order_by('month')
+    disease_stats = Diagnosis.objects.values('predicted_disease__name').annotate(count=Count('id'))
+    recent_users = User.objects.order_by('-date_joined')[:3]
+    recent_diagnoses = Diagnosis.objects.order_by('-created_at')[:2]
+
+    context = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'total_diagnoses': total_diagnoses,
+        'completed_diagnoses': completed_diagnoses,
+        'disease_types': disease_types,
+        'pending_messages': pending_messages,
+        'monthly_diagnoses': list(monthly_diagnoses),
+        'disease_stats': list(disease_stats),
+        'recent_users': recent_users,
+        'recent_diagnoses': recent_diagnoses,
+        'weather_data': weather_data,
+    }
+    return render(request, 'crops/admin/weather.html', context)
+
+# Add weather location view
+# views.py
+from django.shortcuts import render, redirect
+from .forms import WeatherLocationForm
+
+
+
+def add_weather_location(request):
+    error = None
+    suggested_regions = [
+        {
+            'name': 'East Africa',
+            'locations': [
+                'Nairobi, Kenya',
+                'Kampala, Uganda',
+                'Dar es Salaam, Tanzania'
+            ]
+        },
+        {
+            'name': 'West Africa',
+            'locations': [
+                'Lagos, Nigeria',
+                'Accra, Ghana',
+                'Abidjan, Ivory Coast'
+            ]
+        }
+    ]
+    
+    if request.method == 'POST':
+        location_name = request.POST.get('location_name')
+        api_provider = request.POST.get('api_provider', 'openweathermap')
+        
+        # Validate the location
+        is_valid, error_msg = validate_weather_location(location_name, api_provider)
+        
+        if is_valid:
+            # Save the location and redirect
+            return redirect('admin_weather')
+        else:
+            error = error_msg
+    
+    return render(request, 'crops/admin/add_weather_location.html', {
+        'error': error,
+        'suggested_regions': suggested_regions
+    })
+# Weather API endpoints
+@staff_member_required
+def weather_api_current(request, location):
+    """API endpoint for current weather data"""
+    weather_service = get_weather_service()
+    weather_data = weather_service.get_current_weather(location)
+    
+    if weather_data:
+        # Convert datetime objects to strings for JSON serialization
+        weather_data['timestamp'] = weather_data['timestamp'].isoformat()
+        weather_data['sunrise'] = weather_data['sunrise'].isoformat()
+        weather_data['sunset'] = weather_data['sunset'].isoformat()
+        
+        return JsonResponse({'status': 'success', 'data': weather_data})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Could not fetch weather data'})
+
+# crops/views.py
+from django.shortcuts import render, redirect
+from .forms import WeatherLocationForm
+from .models import WeatherLocation
+from .weather_services import get_weather_service
+
+@staff_member_required
+def admin_weather(request):
+    """Admin weather dashboard"""
+    weather_service = get_weather_service()
+    locations = WeatherLocation.objects.filter(is_active=True)
+    
+    weather_data = []
+    for location in locations:
+        current_weather = weather_service.get_current_weather(location.name)
+        forecast = weather_service.get_weather_forecast(location.name, days=5)
+        
+        if current_weather:
+            advice = weather_service.get_agricultural_advice(current_weather, forecast)
+            weather_data.append({
+                'location': location,
+                'current': current_weather,
+                'forecast': forecast,
+                'advice': advice
+            })
+    
+    context = {
+        'weather_data': weather_data,
+        'locations': locations,
+    }
+    return render(request, 'crops/admin/weather.html', context)
+
+@staff_member_required
+def admin_add_weather_location(request):
+    """Add new weather location"""
+    if request.method == 'POST':
+        form = WeatherLocationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Weather location added successfully!')
+            return redirect('crops:admin_weather')
+    else:
+        form = WeatherLocationForm()
+    
+    # Suggested locations
+    suggested_regions = [
+        {
+            'name': 'East Africa',
+            'locations': ['Nairobi, Kenya', 'Kampala, Uganda', 'Dar es Salaam, Tanzania']
+        },
+        {
+            'name': 'West Africa',
+            'locations': ['Lagos, Nigeria', 'Accra, Ghana', 'Abidjan, Ivory Coast']
+        }
+    ]
+    
+    return render(request, 'crops/admin/add_weather_location.html', {
+        'form': form,
+        'suggested_regions': suggested_regions
+    })
+
+@staff_member_required
+def admin_edit_weather_location(request, location_id):
+    """Edit existing weather location"""
+    location = get_object_or_404(WeatherLocation, id=location_id)
+    
+    if request.method == 'POST':
+        form = WeatherLocationForm(request.POST, instance=location)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Weather location updated successfully!')
+            return redirect('crops:admin_weather')
+    else:
+        form = WeatherLocationForm(instance=location)
+    
+    return render(request, 'crops/admin/edit_weather_location.html', {
+        'form': form,
+        'location': location
+    })
+
+@staff_member_required
+def admin_delete_weather_location(request, location_id):
+    """Delete weather location"""
+    location = get_object_or_404(WeatherLocation, id=location_id)
+    
+    if request.method == 'POST':
+        location.delete()
+        messages.success(request, 'Weather location deleted successfully!')
+        return redirect('crops:admin_weather')
+    
+    return render(request, 'crops/admin/delete_weather_location.html', {
+        'location': location
+    })
+@staff_member_required
+@require_GET
+def weather_api_forecast(request, location):
+    """API endpoint for weather forecast data"""
+    weather_service = get_weather_service()
+    forecast_data = weather_service.get_weather_forecast(location, days=7)
+    
+    if forecast_data:
+        # Convert date objects to strings for JSON serialization
+        for day in forecast_data:
+            day['date'] = day['date'].isoformat()
+        
+        return JsonResponse({
+            'status': 'success', 
+            'data': forecast_data
+        })
+    else:
+        return JsonResponse({
+            'status': 'error', 
+            'message': 'Could not fetch forecast data'
+        }, status=400)
+
+
+def admin_dashboard(request):
+    # User statistics
+    total_users = User.objects.count()
+    active_users = User.objects.filter(is_active=True).count()
+    
+    # Diagnosis statistics
+    total_diagnoses = Diagnosis.objects.count()
+    completed_diagnoses = Diagnosis.objects.filter(status='completed').count()
+    avg_confidence = Diagnosis.objects.aggregate(avg_conf=Avg('confidence'))['avg_conf'] or 0
+    
+    # Disease statistics
+    disease_types = Disease.objects.count()
+    
+    # Monthly trends
+    monthly_diagnoses = Diagnosis.objects.annotate(
+        month=TruncMonth('created_at')
+    ).values('month').annotate(
+        count=Count('id')
+    ).order_by('month')
+    
+    # Disease distribution
+    disease_stats = Diagnosis.objects.values(
+        'predicted_disease__name'
+    ).annotate(
+        count=Count('id')
+    ).order_by('-count')[:5]  # Top 5 diseases
+    
+    # User types
+    user_type_stats = UserProfile.objects.values(
+        'user_type'
+    ).annotate(
+        count=Count('id')
+    )
+    
+    context = {
+        'total_users': total_users,
+        'active_users': active_users,
+        'total_diagnoses': total_diagnoses,
+        'completed_diagnoses': completed_diagnoses,
+        'disease_types': disease_types,
+        'avg_confidence': round(avg_confidence * 100, 1) if avg_confidence else 0,
+        'success_rate': round((completed_diagnoses / total_diagnoses * 100), 1) if total_diagnoses else 0,
+        'user_type_count': user_type_stats.count(),
+        'monthly_diagnoses': json.dumps(list(monthly_diagnoses), cls=DjangoJSONEncoder),
+        'disease_stats': json.dumps(list(disease_stats), cls=DjangoJSONEncoder),
+        'user_type_stats': json.dumps(list(user_type_stats), cls=DjangoJSONEncoder),
+    }
+    return render(request, 'crops/admin/dashboard.html', context)

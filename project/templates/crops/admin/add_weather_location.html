@@ -1,0 +1,176 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Add Weather Location - FloraSight Admin{% endblock %}
+{% block page_title %}Add Weather Location{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <!-- Form Errors -->
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>Add Weather Location
+                </h5>
+                <a href="{% url 'crops:admin_weather' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Weather
+                </a>
+            </div>
+
+            <form method="post" id="locationForm">
+                {% csrf_token %}
+                
+                <!-- Name Field -->
+                <div class="mb-4">
+                    <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                        Location Name <span class="text-danger">*</span>
+                    </label>
+                    {{ form.name }}
+                    <div class="form-text">
+                        Enter in "City, Country" format (e.g., Kampala, Uganda or Nairobi,KE)
+                    </div>
+                </div>
+
+                <!-- API Provider Field -->
+                <div class="mb-4">
+                    <label for="{{ form.api_provider.id_for_label }}" class="form-label fw-bold">
+                        Weather API Provider
+                    </label>
+                    {{ form.api_provider }}
+                </div>
+
+                <!-- Active Field -->
+                <div class="mb-4 form-check form-switch">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                        Active Monitoring
+                    </label>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'crops:admin_weather' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus me-2"></i>Add Location
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Location Suggestions -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-globe-africa me-2 text-info"></i>Try These African Locations
+            </h5>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <h6>East Africa</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Kampala,UG">
+                                Kampala, Uganda
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Nairobi,KE">
+                                Nairobi, Kenya
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Dar es Salaam,TZ">
+                                Dar es Salaam, Tanzania
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-4">
+                    <h6>West Africa</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Lagos,NG">
+                                Lagos, Nigeria
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Accra,GH">
+                                Accra, Ghana
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Dakar,SN">
+                                Dakar, Senegal
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-md-4">
+                    <h6>Other Regions</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Johannesburg,ZA">
+                                Johannesburg, South Africa
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Cairo,EG">
+                                Cairo, Egypt
+                            </button>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-link btn-sm p-0 location-example" data-location="Addis Ababa,ET">
+                                Addis Ababa, Ethiopia
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle location example clicks
+    const examples = document.querySelectorAll('.location-example');
+    const locationInput = document.getElementById('id_name');
+    
+    examples.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            locationInput.value = this.dataset.location;
+            locationInput.focus();
+        });
+    });
+
+    // Form submission validation
+    const form = document.getElementById('locationForm');
+    form.addEventListener('submit', function(e) {
+        const value = locationInput.value.trim();
+        if (!value) {
+            e.preventDefault();
+            alert('Please enter a location name');
+            locationInput.focus();
+        }
+    });
+});
+</script>
+{% endblock %}

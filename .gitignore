@@ -1,82 +1,24 @@
-# Virtual environment
-venv/
-.venv/
-
-# ML model
-project/ml_models/trained_cnn_model.keras/
-project/media/crop_images/*
-
-# Other common ignores (optional but recommended)
+# Python cache
 __pycache__/
 *.py[cod]
-*$py.class
-.DS_Store
-.envvenv/
 
-# Ignore Python compiled files
-**/__pycache__/
-*.pyc
-*.pyo
+# Environments
+.venv/
+venv/
+.env
+*.env
 
-# Ignore SQLite DB
+# Django DB (development only)
 *.sqlite3
 
+# Node
+node_modules/
 
-.env
+# Compiled or heavy files
+*.h5
+*.keras
+*.json
+ml_models/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-project/db.sqlite3
-secrets.txt
+# Media (optional, depending on your use case)
+media/

@@ -60,64 +60,61 @@
                     {% if page_obj %}
                     <div class="table-responsive">
                         <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="width: 120px;">Image</th>
-                                   
-                                    <th style="width: 120px;">Disease</th>
-                                    <th style="width: 100px;">Confidence</th>
-                                    <th>Treatment</th>
-                                    <th>Prevention</th>
-                                    <th style="width: 100px;">Status</th>
-                                    <th style="width: 150px;">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for diagnosis in page_obj %}
-                                <tr class="searchable-item">
-                                    <td>
-                                        <img src="{{ diagnosis.crop_image.url }}" 
-                                             alt="Crop" class="diagnosis-thumb">
-                                    </td>
-                                   
-                                    <td>
-                                        {% if diagnosis.predicted_disease %}
-                                            <span class="badge bg-danger">{{ diagnosis.predicted_disease.name }}</span>
-                                        {% else %}
-                                            <span class="text-muted">Pending</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if diagnosis.confidence_score %}
-                                            {{ diagnosis.confidence_score|floatformat:1 }}%
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if diagnosis.treatment %}
-                                            {{ diagnosis.treatment|truncatechars:100 }}
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if diagnosis.prevention %}
-                                            {{ diagnosis.prevention|truncatechars:100 }}
-                                        {% else %}
-                                            <span class="text-muted">-</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{% if diagnosis.status == 'completed' %}success{% elif diagnosis.status == 'processing' %}warning{% else %}danger{% endif %}">
-                                            {{ diagnosis.get_status_display }}
-                                        </span>
-                                    </td>
-                                    <td class="text-nowrap">{{ diagnosis.created_at|date:"M d, Y H:i" }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+    <thead>
+        <tr>
+            <th style="width: 120px;">Image</th>
+            <th style="width: 120px;">Disease</th>
+            <th style="width: 100px;">Confidence</th>
+            <th>Treatment</th>
+            <th>Prevention</th>
+            <th style="width: 100px;">Status</th>
+            <th style="width: 150px;">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for diagnosis in page_obj %}
+        <tr class="searchable-item">
+            <td>
+                <img src="{{ diagnosis.crop_image.url }}" alt="Crop" class="diagnosis-thumb">
+            </td>
+            <td>
+                {% if diagnosis.predicted_disease %}
+                    <span class="badge bg-danger">{{ diagnosis.predicted_disease.name }}</span>
+                {% else %}
+                    <span class="text-muted">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if diagnosis.confidence_score %}
+                    {{ diagnosis.confidence_score|floatformat:1 }}%
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if diagnosis.recommendation and diagnosis.recommendation.treatment_plan %}
+                    {{ diagnosis.recommendation.treatment_plan|truncatechars:100 }}
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if diagnosis.recommendation and diagnosis.recommendation.preventive_measures %}
+                    {{ diagnosis.recommendation.preventive_measures|truncatechars:100 }}
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
+            </td>
+            <td>
+                <span class="badge bg-{% if diagnosis.status == 'completed' %}success{% elif diagnosis.status == 'processing' %}warning{% else %}danger{% endif %}">
+                    {{ diagnosis.get_status_display }}
+                </span>
+            </td>
+            <td class="text-nowrap">{{ diagnosis.created_at|date:"M d, Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
                     </div>
 
                     <!-- Pagination -->

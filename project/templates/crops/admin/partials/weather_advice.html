@@ -1,0 +1,33 @@
+<!-- Agricultural Advice -->
+{% if weather_data %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-lightbulb me-2 text-warning"></i>Agricultural Advice
+            </h5>
+            
+            <div class="row">
+                {% for data in weather_data %}
+                    {% if data.advice %}
+                    <div class="col-lg-6 mb-3">
+                        <h6 class="text-primary">{{ data.current.location }}</h6>
+                        {% for advice in data.advice %}
+                        <div class="alert alert-{{ advice.type }} alert-sm">
+                            <div class="d-flex align-items-start">
+                                <i class="{{ advice.icon }} me-2 mt-1"></i>
+                                <div>
+                                    <h6 class="alert-heading mb-1">{{ advice.title }}</h6>
+                                    <p class="mb-0 small">{{ advice.message }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,39 @@
+<!-- Broadcast Weather Message -->
+<div class="row">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-bullhorn me-2 text-success"></i>Send Weather Alert to Farmers
+            </h5>
+            
+            <form method="post" action="{% url 'crops:admin_send_broadcast' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label for="weather_message_title" class="form-label fw-bold">Alert Title</label>
+                        <input type="text" class="form-control" id="weather_message_title" name="title" 
+                               placeholder="e.g., Heavy Rain Expected This Week">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="weather_message_type" class="form-label fw-bold">Alert Type</label>
+                        <select class="form-control" id="weather_message_type" name="message_type">
+                            <option value="info">Weather Information</option>
+                            <option value="warning">Weather Warning</option>
+                            <option value="success">Good Weather News</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="weather_message" class="form-label fw-bold">Message</label>
+                    <textarea class="form-control" id="weather_message" name="message" rows="3" 
+                              placeholder="Inform farmers about weather conditions and recommended actions..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane me-2"></i>Send Weather Alert
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

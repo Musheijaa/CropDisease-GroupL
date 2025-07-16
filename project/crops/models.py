@@ -47,20 +47,25 @@ class Diagnosis(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     crop_image = models.ImageField(upload_to='crop_images/')
     crop_type = models.ForeignKey(CropType, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    # ML Model Results (to be populated by ML team)
     predicted_disease = models.ForeignKey(Disease, on_delete=models.SET_NULL, null=True, blank=True)
     confidence_score = models.FloatField(null=True, blank=True)
     severity_level = models.CharField(max_length=20, blank=True)
     affected_area_percentage = models.FloatField(null=True, blank=True)
-    treatment = models.TextField(blank=True)
-    prevention = models.TextField(blank=True)
+    
+    # Environmental data
     temperature = models.FloatField(null=True, blank=True)
     humidity = models.FloatField(null=True, blank=True)
     soil_ph = models.FloatField(null=True, blank=True)
+    
+    # Status and metadata
     status = models.CharField(max_length=20, choices=[
         ('processing', 'Processing'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ], default='processing')
+    
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,6 +75,7 @@ class Diagnosis(models.Model):
     
     def __str__(self):
         return f"Diagnosis {self.id} - {self.user.username}"
+
 class Recommendation(models.Model):
     diagnosis = models.OneToOneField(Diagnosis, on_delete=models.CASCADE)
     treatment_plan = models.TextField()
@@ -144,3 +150,36 @@ class SystemSettings(models.Model):
     
     def __str__(self):
         return f"{self.key}: {self.value[:50]}"
+
+class WeatherLocation(models.Model):
+    API_PROVIDERS = [
+        ('openweathermap', 'OpenWeatherMap'),
+        ('weatherapi', 'WeatherAPI.com'),
+        ('accuweather', 'AccuWeather'),
+    ]
+    
+    name = models.CharField(max_length=100)
+    
+    api_provider = models.CharField(max_length=20, choices=API_PROVIDERS, default='openweathermap')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return self.name
+class WeatherData(models.Model):
+    location = models.ForeignKey(WeatherLocation, on_delete=models.CASCADE)
+    temperature = models.FloatField()
+    humidity = models.FloatField()
+    pressure = models.FloatField()
+    wind_speed = models.FloatField()
+    precipitation = models.FloatField(default=0)
+    description = models.CharField(max_length=100)
+    recorded_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-recorded_at']
+    
+    def __str__(self):
+        return f"{self.location.name} - {self.recorded_at.strftime('%Y-%m-%d %H:%M')}"
