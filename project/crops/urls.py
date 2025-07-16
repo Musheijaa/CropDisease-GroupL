@@ -50,5 +50,10 @@ urlpatterns = [
      path('mark-message-read/<int:message_id>/', views.mark_message_read, name='mark_message_read'),
      
      path('all-messages/', views.all_messages, name='all_messages'),
+     path('admin-panel/weather/', views.admin_weather, name='admin_weather'),
+      path('admin-panel/weather/add-location/', views.admin_add_weather_location, name='admin_add_weather_location'),
+      path('admin-panel/weather/api/current/<str:location>/', views.weather_api_current, name='weather_api_current'),
+      path('admin-panel/weather/api/forecast/<str:location>/', views.weather_api_forecast, name='weather_api_forecast'),
+    
 
 ]

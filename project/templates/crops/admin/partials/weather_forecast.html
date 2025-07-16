@@ -1,0 +1,37 @@
+<!-- Weather Forecast -->
+{% for data in weather_data %}
+{% if data.forecast %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="chart-container">
+            <h5 class="mb-4">
+                <i class="fas fa-calendar-alt me-2 text-info"></i>5-Day Forecast - {{ data.current.location }}
+            </h5>
+            
+            <div class="forecast-scroll">
+                <div class="d-flex flex-nowrap">
+                    {% for day in data.forecast %}
+                    <div class="flex-shrink-0 me-3" style="width: 150px;">
+                        <div class="forecast-card text-center">
+                            <div class="fw-bold text-primary">{{ day.date|date:"M d" }}</div>
+                            <div class="text-muted small">{{ day.date|date:"D" }}</div>
+                            
+                            <img src="http://openweathermap.org/img/wn/{{ day.icon }}.png" 
+                                 alt="{{ day.description }}" class="forecast-icon my-2">
+                            
+                            <div class="forecast-temps">
+                                <span class="fw-bold">{{ day.temp_max }}°</span>
+                                <span class="text-muted">{{ day.temp_min }}°</span>
+                            </div>
+                            
+                            <div class="small text-muted">{{ day.description }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}

@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environments
+.venv/
+venv/
+.env
+*.env
+
+# Django DB (development only)
+*.sqlite3
+
+# Node
+node_modules/
+
+# Compiled or heavy files
+*.h5
+*.keras
+*.json
+ml_models/
+
+# Media (optional, depending on your use case)
+media/
+project/staticfiles/

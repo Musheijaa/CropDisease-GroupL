@@ -1,0 +1,94 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}Weather Dashboard - FloraSight Admin{% endblock %}
+{% block page_title %}Weather Monitoring{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center bg-white rounded-3 shadow-sm p-3">
+            <h5 class="mb-0 text-success fw-bold">
+                <i class="fas fa-cloud-sun me-2 text-primary"></i> Weather Monitoring Dashboard
+            </h5>
+            <div class="d-flex gap-2">
+                <a href="{% url 'crops:admin_add_weather_location' %}" class="btn btn-success shadow-sm">
+                    <i class="fas fa-map-marker-alt me-2"></i> Add Location
+                </a>
+                <a href="{% url 'crops:admin_weather_settings' %}" class="btn btn-outline-primary shadow-sm">
+                    <i class="fas fa-cog me-2"></i> Settings
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Weather Data Section -->
+<div class="mb-4">
+    {% include 'crops/admin/partials/weather_data.html' %}
+</div>
+
+<!-- Agricultural Advice Section -->
+<div class="mb-4">
+    {% include 'crops/admin/partials/weather_advice.html' %}
+</div>
+
+<!-- Forecast Section -->
+<div class="mb-4">
+    {% include 'crops/admin/partials/weather_forecast.html' %}
+</div>
+
+<!-- Broadcast Section -->
+<div>
+    {% include 'crops/admin/partials/weather_broadcast.html' %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.weather-icon {
+    width: 64px;
+    height: 64px;
+    transition: transform 0.3s ease;
+}
+.weather-icon:hover {
+    transform: scale(1.1);
+}
+
+.forecast-icon {
+    width: 48px;
+    height: 48px;
+    transition: transform 0.3s ease;
+}
+.forecast-icon:hover {
+    transform: scale(1.05);
+}
+
+.weather-stat {
+    background: linear-gradient(145deg, #f5f5f5, #ffffff);
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+.weather-stat:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.weather-stat i {
+    font-size: 1.5rem;
+    color: #4caf50;
+    margin-bottom: 4px;
+}
+
+.card-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.card-subtitle {
+    font-size: 0.9rem;
+    color: #666;
+}
+</style>
+{% endblock %}

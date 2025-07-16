@@ -1,5 +1,5 @@
 from django import forms
-from .models import Diagnosis, UserProfile, CropType
+from .models import Diagnosis, UserProfile, CropType, WeatherLocation
 
 class DiagnosisForm(forms.ModelForm):
     class Meta:
@@ -62,5 +62,23 @@ class UserProfileForm(forms.ModelForm):
             'primary_crops': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'e.g., Maize, Beans, Coffee'
+            }),
+        }
+
+class WeatherLocationForm(forms.ModelForm):
+    class Meta:
+        model = WeatherLocation
+        fields = ['name', 'api_provider', 'is_active']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter location name'
+            }),
+            
+            'api_provider': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
             }),
         }

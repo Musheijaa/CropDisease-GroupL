@@ -1,0 +1,56 @@
+{% extends 'crops/admin/base_admin.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Weather Location - FloraSight Admin{% endblock %}
+{% block page_title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Weather Location{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="chart-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Weather Location
+                </h5>
+                <a href="{% url 'crops:admin_weather' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Weather
+                </a>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label for="id_location_name" class="form-label fw-bold">
+                        Location Name <span class="text-danger">*</span>
+                    </label>
+                    {{ form.location_name }}
+                    <div class="form-text">
+                        Enter city name, state/province, and country for best results
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">API Provider</label>
+                    {{ form.api_provider }}
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-check-label">
+                        {{ form.is_active }} Active Monitoring
+                    </label>
+                    <div class="form-text">
+                        Disable to temporarily stop updates for this location
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a href="{% url 'crops:admin_weather' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Save Location
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -61,11 +61,14 @@ WSGI_APPLICATION = 'florasight.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'ENGINE': 'django.db.backends.postgresql',
+'NAME': 'floradb',
+'USER': 'florasight',
+'PASSWORD': 'admin',
+'HOST': 'localhost',
+'PORT': '5432',
     }
 }
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -123,3 +126,5 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+OPENWEATHER_API_KEY = config('OPENWEATHER_API_KEY')

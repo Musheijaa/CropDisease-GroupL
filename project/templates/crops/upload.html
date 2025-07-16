@@ -33,7 +33,7 @@
             background: var(--bg-light);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-dark);
-            min-height: 100vh;
+            margin: 0;
         }
 
         /* Section badge */
@@ -196,10 +196,16 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        #how-it-works {
+            padding-top: 0;
+            padding-bottom: 0;
+            min-height: calc(100vh - 56px - 60px); /* Adjust for navbar and footer height */
+        }
     </style>
 </head>
 <body>
-    <section id="how-it-works" class="py-5 min-vh-100 d-flex align-items-center">
+    <section id="how-it-works" class="py-0">
         <div class="container">
             <div class="text-center mb-5">
                 <div class="section-badge mb-3">
