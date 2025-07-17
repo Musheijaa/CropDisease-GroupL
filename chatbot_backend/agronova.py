@@ -1,9 +1,9 @@
 from fastapi import FastAPI,Request #type: ignore
-from pydantic import BaseModel
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_groq import ChatGroq 
-from fastapi.middleware.cors import CORSMiddleware# You can switch to ChatOpenAI, etc.
-from dotenv import load_dotenv
+from pydantic import BaseModel #type: ignore
+from langchain_core.prompts import ChatPromptTemplate #type: ignore
+from langchain_groq import ChatGroq #type: ignore
+from fastapi.middleware.cors import CORSMiddleware  #type: ignore # You can switch to ChatOpenAI, etc.
+from dotenv import load_dotenv #type: ignore
 load_dotenv()
 import os
 

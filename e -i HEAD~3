@@ -1,0 +1,48 @@
+[33m84db37a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mokema[m[33m)[m Remove secrets
+[33m8a828f7[m containerized the system
+[33m17c4c77[m Resolve merge conflict in requirements.txt after stash pop
+[33mdbf8ddf[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #16 from GeorgeLukaanya/main
+[33m0194853[m Newest with https
+[33m62776fc[m Delete crops directory
+[33mb3a52d2[m Merge pull request #15 from Musheijaa/Abraham
+[33mc3a0b3c[m[33m ([m[1;31morigin/Abraham[m[33m)[m Stop tracking .gitignore
+[33m494c3a9[m Update .gitignore
+[33mcf2f193[m Resolved merge conflicts in .gitignore, db.sqlite3, and upload.html
+[33m94c7d63[m Ignore staticfiles directory
+[33m9cd8698[m Add new migrations, weather services, and admin templates
+[33m0b21b39[m Merge pull request #13 from GeorgeLukaanya/main
+[33me7e07ec[m Merge branch 'main' of github.com:GeorgeLukaanya/CropDisease-GroupL
+[33m7917c94[m Updated requirements.txt and upload.html with download function
+[33m8c74b67[m Added chat_requirements.txt
+[33m7deb7b3[m Merge pull request #12 from GeorgeLukaanya/main
+[33m729ab6c[m Remove images
+[33mf044fe9[m Merge pull request #11 from GeorgeLukaanya/main
+[33mce0854a[m Remove git ignore
+[33m5e2eeae[m Remove git ignore
+[33md1d45bd[m Merge pull request #10 from Musheijaa/okema
+[33m199133a[m[33m ([m[1;31morigin/okema[m[33m)[m Add secrets.txt to .gitignore
+[33m28ce955[m Clean secret from .env
+[33m345328f[m Remove Groq API key and fix .env exposure
+[33m651111b[m added
+[33m1224b11[m Improve chatbot system prompt and UI alignment
+[33mb104444[m[33m ([m[1;32mmain[m[33m)[m Merge pull request #8 from GeorgeLukaanya/main
+[33mb12bc45[m Newest updates for dignosis
+[33m848bfe5[m Updates
+[33m959faff[m Updates
+[33mba92484[m Merge pull request #7 from Musheijaa/Abraham
+[33mc788cdc[m intergration with ml
+[33mbc69666[m Merge pull request #6 from Musheijaa/Abraham
+[33mcc28ec2[m Ignore db.sqlite3
+[33m25d7b24[m Merge pull request #5 from Musheijaa/Abraham
+[33m8e1d3cd[m upload photo
+[33m8ced685[m Merge pull request #4 from Musheijaa/Abraham
+[33med029fe[m HOME
+[33m8a310be[m Merge pull request #3 from Musheijaa/Abraham
+[33mdcddfff[m proper set up
+[33m442d8d9[m Merge pull request #2 from Musheijaa/Abraham
+[33m2c72e44[m Removed venv from tracking and added to .gitignore
+[33me7914fa[m Merge pull request #1 from Musheijaa/Abraham
+[33md94bf30[m updated system
+[33mae1169b[m Update .gitignore to exclude venv directory
+[33m72dc688[m Add .gitignore to exclude venv
+[33m52e3b97[m Initial commit
