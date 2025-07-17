@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.log
+*.h5
+*.tflite
+*.csv
+*.json
+*.zip
+node_modules/
+media/
+static/
+.git/
+.env
