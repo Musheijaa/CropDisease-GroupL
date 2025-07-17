@@ -1,8 +1,12 @@
-django
-pillow
+Django>=4.2
+Pillow>=9.0.0
 python-decouple
-tensorflow
-dotenv
-psycopg2-binary
+python-dotenv
+tensorflow>=2.12
+psycopg2-binary>=2.9
 django-extensions
 pyOpenSSL
+djangorestframework>=3.14
+gunicorn>=20.1
+numpy>=1.23
+scipy>=1.9

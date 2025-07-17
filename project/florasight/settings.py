@@ -62,14 +62,15 @@ WSGI_APPLICATION = 'florasight.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-'NAME': 'floradb',
-'USER': 'florasight',
-'PASSWORD': 'admin',
-'HOST': 'localhost',
-'PORT': '5432',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'florasight_db',
+        'USER': 'florasight',
+        'PASSWORD': 'florasight',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {

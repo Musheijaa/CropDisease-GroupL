@@ -1,4 +1,0 @@
-fastapi
-langchain_core
-langchain_groq
-dotenv
